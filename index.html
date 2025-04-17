@@ -1,77 +1,117 @@
-<!-- index.html -->
+<!-- index.html (Aggiunte/Modifiche) -->
 
-<!-- ... (Link della sfida nella sezione #framework) -->
-<div class="challenge" style="margin-top: 2rem;">
+<!-- ... (Contenuto precedente delle sezioni, MA aggiorna i link delle sfide come segue) ... -->
+
+<!-- Esempio Aggiornamento Link Sfida (Sezione Introduzione) -->
+<div class="challenge">
+    <div class="token-reward"><i class="fas fa-coins"></i> 10 TRAD</div>
+    <h4><i class="fas fa-user-check"></i> Sfida Iniziale: Auto-Valutazione</h4>
+    <p>Rifletti onestamente...
+        <a href="#" class="resource-link challenge-link"
+           data-challenge-id="self-assessment"
+           data-reward="10"
+           data-modal-target="quizModal"> <!-- <--- MODIFICA QUI -->
+           Inizia Valutazione (Quiz)
+        </a>
+    </p>
+</div>
+
+<!-- Esempio Aggiornamento Link Sfida (Sezione Principi) -->
+<div class="challenge">
+    <div class="token-reward"><i class="fas fa-coins"></i> 15 TRAD</div>
+    <h4><i class="fas fa-book"></i> Sfida: Assimilazione Verità</h4>
+    <p>Scegli una delle 5 Verità e scrivi...
+        <a href="#" class="resource-link challenge-link"
+           data-challenge-id="truth-assimilation"
+           data-reward="15"
+           data-modal-target="reflectionModal"> <!-- <--- MODIFICA QUI -->
+           Invia Riflessione
+        </a>
+    </p>
+</div>
+
+<!-- Esempio Aggiornamento Link Sfida (Sezione Framework) -->
+<div class="challenge">
     <div class="token-reward"><i class="fas fa-coins"></i> 50 TRAD</div>
     <h4><i class="fas fa-play-circle"></i> Sfida Chiave: Serie di 20 Trade</h4>
     <p>Applica l'esercizio "Operare come un Casinò"...
         <a href="#" class="resource-link challenge-link"
            data-challenge-id="20-trade-series"
            data-reward="50"
-           data-modal-target="tradeSimulatorModal"> <!-- <--- AGGIORNATO QUI -->
+           data-modal-target="simulationModal"> <!-- <--- MODIFICA QUI -->
            Inizia la Serie Simulata
         </a>
     </p>
 </div>
 
-<!-- ... (Resto dell'HTML) ... -->
+<!-- Esempio Aggiornamento Link Sfida (Sezione Risorse) -->
+<div class="challenge">
+    <div class="token-reward"><i class="fas fa-coins"></i> 30 TRAD</div>
+    <h4><i class="fas fa-journal-whills"></i> Sfida: Diario Psicologico</h4>
+    <p>Tieni un diario per una settimana...
+        <a href="#" class="resource-link challenge-link"
+           data-challenge-id="psych-journal"
+           data-reward="30"
+           data-modal-target="reflectionModal"> <!-- <--- MODIFICA QUI -->
+           Conferma Completamento Diario
+        </a>
+        <!-- Potremmo anche linkare un template -->
+        (<a href="#" class="resource-link" download>Scarica Template</a>)
+    </p>
+</div>
 
-<!-- ========== NUOVO MODAL: SIMULATORE DI TRADING ========== -->
-<div id="tradeSimulatorModal" class="modal">
-    <div class="modal-content" style="max-width: 600px;"> <!-- Modal più largo -->
-        <span class="close-modal" data-modal-id="tradeSimulatorModal">&times;</span>
-        <h2 class="modal-title">Simulatore: Serie di 20 Trade Disciplinati</h2>
-        <p class="modal-description" style="text-align: left; margin-bottom: 1.5rem;">
-            Obiettivo: Eseguire 20 trade consecutivi basati su un segnale simulato, rispettando <strong>rigidamente</strong> stop loss e take profit predefiniti, senza intervenire. Osserva la distribuzione casuale dei risultati e pratica la disciplina.
-        </p>
 
-        <div id="simulator-ui">
-            <!-- Area Stato Simulazione -->
-            <div class="simulator-status">
-                <div>Trade Corrente: <strong id="current-trade-number">1 / 20</strong></div>
-                <div>P&L Totale (Simulato): <strong id="total-pnl">0</strong> Punti</div>
-                <div>Win Rate: <strong id="win-rate">N/A</strong></div>
+<!-- ... (Resto del contenuto HTML) ... -->
+
+
+<!-- ========== NUOVI MODAL PER LE SFIDE ========== -->
+
+<!-- Modal per Quiz -->
+<div id="quizModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" data-modal-id="quizModal">&times;</span>
+        <h2 class="modal-title" id="quiz-title">Quiz Sfida</h2>
+        <form id="quiz-form">
+            <div id="quiz-questions">
+                <!-- Le domande verranno caricate qui da JS -->
+                <p>Caricamento domande...</p>
             </div>
-
-            <!-- Area Segnale/Trade -->
-            <div id="signal-area" class="card" style="background-color: #f8f9fa; margin-top:1rem;">
-                <h4 style="margin-top: 0;">Setup Trade <span id="signal-trade-number">1</span></h4>
-                <div id="signal-details">
-                    <p>In attesa del segnale...</p>
-                    <!-- Qui apparirà il segnale (Long/Short) -->
-                </div>
-                <button id="enter-trade-btn" class="form-button primary-button" style="width: auto; padding: 10px 20px;" disabled>Entra nel Trade</button>
-            </div>
-
-            <!-- Area Esecuzione Trade (visibile durante il trade) -->
-            <div id="execution-area" class="card" style="display: none; margin-top: 1rem; border-left: 5px solid var(--secondary-color);">
-                 <h4 style="margin-top: 0;">Trade <span id="execution-trade-number">1</span> in Corso...</h4>
-                 <p><strong>Direzione:</strong> <span id="execution-direction">N/A</span></p>
-                 <p><strong>Stop Loss:</strong> -<span id="stop-loss-points">5</span> Punti</p>
-                 <p><strong>Take Profit:</strong> +<span id="take-profit-points">10</span> Punti</p>
-                 <div class="market-movement">
-                     Prezzo Corrente (Simulato): <strong id="current-price">0</strong>
-                     <div class="price-bar-container">
-                         <div class="price-bar" id="price-bar"></div>
-                     </div>
-                 </div>
-                 <p id="trade-status" style="font-weight: bold; margin-top: 1rem; text-align: center;"></p>
-                 <button id="next-trade-btn" class="form-button success-button" style="display:none; width: auto; padding: 10px 20px; margin-top: 1rem;">Prossimo Trade</button>
-            </div>
-
-             <!-- Area Risultati Finali (visibile alla fine) -->
-             <div id="final-results-area" style="display: none; text-align: center; margin-top: 2rem;">
-                 <h3>Serie di 20 Trade Completata!</h3>
-                 <p><strong>P&L Totale Finale:</strong> <strong id="final-total-pnl">0</strong> Punti</p>
-                 <p><strong>Win Rate Finale:</strong> <strong id="final-win-rate">N/A</strong></p>
-                 <p>Hai dimostrato disciplina nell'eseguire la serie meccanica.</p>
-                 <button id="claim-reward-btn" class="form-button success-button">Riscuoti Ricompensa</button>
-             </div>
-        </div>
-
-         <!-- Bottone Reset (per ricominciare la simulazione) -->
-          <button id="reset-simulation-btn" class="form-button danger-button" style="width: auto; padding: 8px 15px; font-size: 0.9rem; margin-top: 1.5rem; display: none;">Reset Simulazione</button>
-
+            <p id="quiz-error" class="form-error" style="display: none; color: var(--danger-color);"></p>
+            <button type="submit" class="form-button primary-button">Invia Risposte</button>
+        </form>
     </div>
 </div>
-<!-- ========== FINE MODAL SIMULATORE ========== -->
+
+<!-- Modal per Riflessione/Testo -->
+<div id="reflectionModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" data-modal-id="reflectionModal">&times;</span>
+        <h2 class="modal-title" id="reflection-title">Riflessione Sfida</h2>
+        <form id="reflection-form">
+            <div class="form-group">
+                <label for="reflection-text" id="reflection-label">Inserisci la tua riflessione:</label>
+                <textarea id="reflection-text" rows="6" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1rem;"></textarea>
+            </div>
+             <p id="reflection-error" class="form-error" style="display: none; color: var(--danger-color);"></p>
+            <button type="submit" class="form-button primary-button">Invia Riflessione</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal per Simulazioni (Conferma semplice) -->
+<div id="simulationModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" data-modal-id="simulationModal">&times;</span>
+        <h2 class="modal-title" id="simulation-title">Avvio Sfida Simulata</h2>
+        <p id="simulation-description" style="margin-bottom: 1.5rem;">Questa sfida richiede un impegno esterno alla piattaforma (es. trading simulato, monitoraggio). Conferma di aver compreso e di voler avviare/completare la sfida per ricevere i token.</p>
+        <form id="simulation-form">
+            <!-- Aggiungeremo qui i dettagli specifici della sfida da JS -->
+            <button type="submit" class="form-button success-button">Confermo Avvio/Completamento</button>
+        </form>
+    </div>
+</div>
+
+<!-- ========== FINE NUOVI MODAL ========== -->
+
+
+<!-- ... (Footer e tag <script> per main.js) ... -->

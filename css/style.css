@@ -1,119 +1,70 @@
-/* css/style.css (Aggiunte per il Simulatore) */
+/* css/style.css (Aggiunte) */
 
-.simulator-status {
-    display: flex;
-    justify-content: space-around;
-    background-color: var(--primary-color);
-    color: var(--light-text);
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 0.95rem;
+/* --- Stili per Modal Sfide --- */
+.modal-title {
+    margin-bottom: 1.5rem; /* Assicura spazio sotto il titolo */
+}
+
+/* Stili Quiz */
+#quiz-questions .quiz-question {
     margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--border-color);
 }
-.simulator-status strong {
-    color: var(--accent-color);
-    margin-left: 5px;
-}
-
-#signal-area h4, #execution-area h4 {
-    color: var(--primary-color);
+#quiz-questions .quiz-question:last-child {
+    border-bottom: none;
     margin-bottom: 1rem;
 }
-
-#signal-details p {
-    font-size: 1.1rem;
+.quiz-question p {
     font-weight: 600;
-    margin-bottom: 1rem;
-    text-align: center;
+    margin-bottom: 0.8rem;
 }
-#signal-details .signal-long { color: var(--success-color); }
-#signal-details .signal-short { color: var(--danger-color); }
-
-#enter-trade-btn:disabled {
-    background-color: var(--grey-text);
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-.market-movement {
-    margin-top: 1.5rem;
-    text-align: center;
-}
-.market-movement #current-price {
-    font-size: 1.5rem;
-    color: var(--dark-text);
+.quiz-options label {
     display: block;
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.quiz-options label:hover {
+    background-color: #f0f7ff;
+    border-color: var(--secondary-color);
+}
+.quiz-options input[type="radio"] {
+    margin-right: 10px;
+    accent-color: var(--secondary-color); /* Colora il pallino radio */
 }
 
-/* Barra di Progresso Prezzo Semplificata */
-.price-bar-container {
+/* Stili Riflessione */
+#reflection-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+#reflection-form textarea {
     width: 100%;
-    height: 20px;
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    min-height: 120px; /* Altezza minima */
+    resize: vertical; /* Permetti resize verticale */
+}
+
+/* Messaggi di errore nei form dei modal */
+.form-error {
+    color: var(--danger-color);
+    font-size: 0.9rem;
     margin-top: 10px;
-}
-.price-bar {
-    position: absolute;
-    left: 50%; /* Inizia al centro */
-    top: 0;
-    height: 100%;
-    width: 4px; /* Larghezza indicatore prezzo */
-    background-color: var(--secondary-color);
-    transform: translateX(-50%); /* Centra l'indicatore */
-    transition: left 0.2s linear; /* Animazione movimento prezzo */
-}
-/* Aggiungiamo limiti visivi SL/TP (Opzionale ma utile) */
-.price-bar-container::before,
-.price-bar-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 3px; /* Larghezza linee SL/TP */
-    opacity: 0.7;
-}
-.price-bar-container::before { /* Stop Loss visivo */
-    left: 10%; /* Esempio: Posizione SL (10% dal centro) */
-    background-color: var(--danger-color);
-}
-.price-bar-container::after { /* Take Profit visivo */
-    left: 90%; /* Esempio: Posizione TP (90% dal centro) */
-    background-color: var(--success-color);
+    text-align: center;
+    font-weight: 600;
 }
 
-
-#trade-status {
-    font-size: 1.2rem;
-    min-height: 1.5em; /* Spazio per il testo */
-}
-#trade-status.win { color: var(--success-color); }
-#trade-status.loss { color: var(--danger-color); }
-
-#final-results-area {
-    padding: 20px;
-    background-color: #e8f5e9; /* Sfondo leggermente verde */
-    border-radius: 5px;
-    border: 1px solid var(--success-color);
-}
-#final-results-area h3 {
-    color: #2e7d32; /* Verde scuro */
-    margin-bottom: 1rem;
-}
-#final-results-area strong {
-     color: var(--primary-color);
-}
-
-#reset-simulation-btn {
-     background-color: var(--grey-text);
-     border: none;
-     color: var(--light-text);
-     margin-left: auto; /* Spinge a destra se possibile */
-     display: none; /* Nascosto all'inizio */
-}
-#reset-simulation-btn:hover {
-     background-color: #5a6268;
+/* Stili Modal Simulazione */
+#simulation-description {
+    color: var(--grey-text);
+    line-height: 1.6;
+    text-align: center;
 }
