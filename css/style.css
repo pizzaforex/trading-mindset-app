@@ -1,70 +1,98 @@
-/* css/style.css (Aggiunte) */
+/* ... (TUTTI gli stili CSS della versione precedente, inclusi :root, reset, body, header.banner, etc.) ... */
 
-/* --- Stili per Modal Sfide --- */
-.modal-title {
-    margin-bottom: 1.5rem; /* Assicura spazio sotto il titolo */
+/* --- Header (Toolbar) Assicurati che questi stili siano presenti/aggiornati --- */
+header.toolbar {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    padding: 0 20px;
+    height: var(--header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
-/* Stili Quiz */
-#quiz-questions .quiz-question {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px dashed var(--border-color);
+.toolbar-logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin-right: 25px;
+    color: var(--light-text);
+    letter-spacing: 0.5px;
 }
-#quiz-questions .quiz-question:last-child {
-    border-bottom: none;
-    margin-bottom: 1rem;
-}
-.quiz-question p {
+.login-tools { display: flex; align-items: center; gap: 12px; }
+/* ... stili per .login-button, .signup-button, .wallet-button, .token-balance ... */
+#user-info {
+    display: none; /* Nascosto di default */
+    align-items: center;
+    color: var(--light-text);
     font-weight: 600;
-    margin-bottom: 0.8rem;
+    margin-left: 10px;
 }
-.quiz-options label {
-    display: block;
-    margin-bottom: 0.6rem;
-    cursor: pointer;
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    transition: background-color 0.2s, border-color 0.2s;
+#username-display {
+    margin-right: 15px;
+    font-size: 0.95rem;
+    opacity: 0.9;
 }
-.quiz-options label:hover {
-    background-color: #f0f7ff;
-    border-color: var(--secondary-color);
-}
-.quiz-options input[type="radio"] {
-    margin-right: 10px;
-    accent-color: var(--secondary-color); /* Colora il pallino radio */
-}
-
-/* Stili Riflessione */
-#reflection-form label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-}
-#reflection-form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 1rem;
-    min-height: 120px; /* Altezza minima */
-    resize: vertical; /* Permetti resize verticale */
-}
-
-/* Messaggi di errore nei form dei modal */
-.form-error {
+#logout-btn {
+    padding: 7px 12px;
+    font-size: 0.85rem;
+    border: 1px solid var(--danger-color);
+    background-color: transparent;
     color: var(--danger-color);
-    font-size: 0.9rem;
-    margin-top: 10px;
-    text-align: center;
-    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+#logout-btn:hover {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #ff5c5c;
+    border-color: #ff5c5c;
 }
 
-/* Stili Modal Simulazione */
-#simulation-description {
-    color: var(--grey-text);
-    line-height: 1.6;
-    text-align: center;
+
+/* --- Barra Navigazione Assicurati che questi stili siano presenti/aggiornati --- */
+nav {
+    background-color: #ffffff;
+    height: var(--nav-height);
+    position: sticky;
+    top: var(--header-height);
+    z-index: 999;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; height: 100%; gap: 10px; }
+nav ul li a { text-decoration: none; color: var(--secondary-color); font-weight: 600; padding: 0 18px; border-radius: 4px; transition: background-color 0.25s ease-out, color 0.25s ease-out, border-bottom-color 0.25s ease-out; font-size: 1rem; line-height: var(--nav-height); display: block; height: 100%; border-bottom: 3px solid transparent; }
+nav ul li a:hover { background-color: #e9f2fa; color: var(--primary-color); border-bottom-color: #a0c7e4; text-decoration: none; }
+nav ul li a.active { background-color: transparent; color: var(--primary-color); border-bottom-color: var(--secondary-color); font-weight: 700; }
+
+/* --- Notifiche Assicurati che questi stili siano presenti/aggiornati --- */
+#notification-area {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1002;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+.notification { /* Stili base come prima */ }
+.notification.show { /* Stili show come prima */ }
+.notification i { /* Stili icone come prima */ }
+.notification.success { background-color: var(--success-color); }
+.notification.error { background-color: var(--danger-color); }
+.notification.info { background-color: var(--secondary-color); }
+
+/* --- Modals (Input specifici) --- */
+/* Assicurati che gli input/label nei modal siano ben stilizzati */
+.modal-content .form-group input::placeholder {
+    color: #aaa;
+    font-style: italic;
+    font-size: 0.9em;
 }

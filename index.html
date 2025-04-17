@@ -1,117 +1,136 @@
-<!-- index.html (Aggiunte/Modifiche) -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading in the Zone - Padroneggia la Mentalità del Trader</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <a id="top"></a> <!-- Anchor per "Torna Su" -->
+    <div class="parallax-bg" id="parallaxBg"></div>
 
-<!-- ... (Contenuto precedente delle sezioni, MA aggiorna i link delle sfide come segue) ... -->
-
-<!-- Esempio Aggiornamento Link Sfida (Sezione Introduzione) -->
-<div class="challenge">
-    <div class="token-reward"><i class="fas fa-coins"></i> 10 TRAD</div>
-    <h4><i class="fas fa-user-check"></i> Sfida Iniziale: Auto-Valutazione</h4>
-    <p>Rifletti onestamente...
-        <a href="#" class="resource-link challenge-link"
-           data-challenge-id="self-assessment"
-           data-reward="10"
-           data-modal-target="quizModal"> <!-- <--- MODIFICA QUI -->
-           Inizia Valutazione (Quiz)
-        </a>
-    </p>
-</div>
-
-<!-- Esempio Aggiornamento Link Sfida (Sezione Principi) -->
-<div class="challenge">
-    <div class="token-reward"><i class="fas fa-coins"></i> 15 TRAD</div>
-    <h4><i class="fas fa-book"></i> Sfida: Assimilazione Verità</h4>
-    <p>Scegli una delle 5 Verità e scrivi...
-        <a href="#" class="resource-link challenge-link"
-           data-challenge-id="truth-assimilation"
-           data-reward="15"
-           data-modal-target="reflectionModal"> <!-- <--- MODIFICA QUI -->
-           Invia Riflessione
-        </a>
-    </p>
-</div>
-
-<!-- Esempio Aggiornamento Link Sfida (Sezione Framework) -->
-<div class="challenge">
-    <div class="token-reward"><i class="fas fa-coins"></i> 50 TRAD</div>
-    <h4><i class="fas fa-play-circle"></i> Sfida Chiave: Serie di 20 Trade</h4>
-    <p>Applica l'esercizio "Operare come un Casinò"...
-        <a href="#" class="resource-link challenge-link"
-           data-challenge-id="20-trade-series"
-           data-reward="50"
-           data-modal-target="simulationModal"> <!-- <--- MODIFICA QUI -->
-           Inizia la Serie Simulata
-        </a>
-    </p>
-</div>
-
-<!-- Esempio Aggiornamento Link Sfida (Sezione Risorse) -->
-<div class="challenge">
-    <div class="token-reward"><i class="fas fa-coins"></i> 30 TRAD</div>
-    <h4><i class="fas fa-journal-whills"></i> Sfida: Diario Psicologico</h4>
-    <p>Tieni un diario per una settimana...
-        <a href="#" class="resource-link challenge-link"
-           data-challenge-id="psych-journal"
-           data-reward="30"
-           data-modal-target="reflectionModal"> <!-- <--- MODIFICA QUI -->
-           Conferma Completamento Diario
-        </a>
-        <!-- Potremmo anche linkare un template -->
-        (<a href="#" class="resource-link" download>Scarica Template</a>)
-    </p>
-</div>
-
-
-<!-- ... (Resto del contenuto HTML) ... -->
-
-
-<!-- ========== NUOVI MODAL PER LE SFIDE ========== -->
-
-<!-- Modal per Quiz -->
-<div id="quizModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" data-modal-id="quizModal">&times;</span>
-        <h2 class="modal-title" id="quiz-title">Quiz Sfida</h2>
-        <form id="quiz-form">
-            <div id="quiz-questions">
-                <!-- Le domande verranno caricate qui da JS -->
-                <p>Caricamento domande...</p>
+    <!-- Toolbar -->
+    <header class="toolbar">
+        <div class="toolbar-left">
+            <div class="toolbar-logo">Trading Mindset</div>
+        </div>
+        <div class="login-tools">
+            <div class="token-balance" id="token-balance"><i class="fas fa-coins token-icon"></i> <span id="token-count">0</span> TRAD</div>
+            <button class="wallet-button" id="wallet-button"><i class="fas fa-wallet"></i> Wallet</button>
+            <button class="login-button" id="login-btn">Accedi</button>
+            <button class="signup-button" id="signup-btn">Registrati</button>
+            <!-- Info Utente Loggato (mostrato da JS) -->
+            <div id="user-info" style="display: none;">
+                 <span id="username-display"></span>
+                 <button id="logout-btn" class="login-button danger-button">Logout</button>
             </div>
-            <p id="quiz-error" class="form-error" style="display: none; color: var(--danger-color);"></p>
-            <button type="submit" class="form-button primary-button">Invia Risposte</button>
-        </form>
-    </div>
-</div>
+        </div>
+    </header>
 
-<!-- Modal per Riflessione/Testo -->
-<div id="reflectionModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" data-modal-id="reflectionModal">&times;</span>
-        <h2 class="modal-title" id="reflection-title">Riflessione Sfida</h2>
-        <form id="reflection-form">
-            <div class="form-group">
-                <label for="reflection-text" id="reflection-label">Inserisci la tua riflessione:</label>
-                <textarea id="reflection-text" rows="6" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1rem;"></textarea>
+    <!-- Barra di Navigazione -->
+    <nav>
+        <ul>
+            <li><a href="#introduzione" class="nav-link">Introduzione</a></li>
+            <li><a href="#principi" class="nav-link">Principi Chiave</a></li>
+            <li><a href="#fasi-sviluppo" class="nav-link">Fasi di Sviluppo</a></li>
+            <li><a href="#framework" class="nav-link">Framework Consistenza</a></li>
+            <li><a href="#risorse" class="nav-link">Risorse</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header Banner -->
+     <header class="banner">
+        <h1>Trading in the Zone</h1>
+        <p>Domina il Mercato con Fiducia, Disciplina e un Atteggiamento Vincente</p>
+        <p style="font-size: 1.1rem; margin-top: 1rem; opacity: 0.9;">Il percorso per sviluppare la mentalità da trader professionista.</p>
+         <a href="#introduzione" class="cta-button" style="margin-top: 1.5rem;">Inizia il Percorso</a>
+    </header>
+
+
+    <!-- Contenuto Principale -->
+    <main class="container">
+
+        <!-- Sezione 1: Introduzione -->
+        <section id="introduzione">
+            <h2><i class="fas fa-door-open"></i> Introduzione: Il Dilemma del Trader</h2>
+            <p>[INSERISCI QUI IL TESTO COMPLETO DELLA SEZIONE INTRODUTTIVA...] ...sviluppo di una <span class="concept">mentalità da trader</span>.</p>
+             <h3>Perché la Maggior Parte dei Trader Fallisce?</h3>
+             <p>[TESTO COMPLETO] </p>
+             <ul> <li>Reazioni emotive...</li><!-- Altri punti --> </ul>
+             <p>La <span class="concept">soluzione</span> non è più analisi, ma lo sviluppo di una <span class="concept">mentalità da trader</span>...</p>
+             <div class="challenge">
+                <div class="token-reward"><i class="fas fa-coins"></i> 10 TRAD</div>
+                <h4><i class="fas fa-user-check"></i> Sfida Iniziale: Auto-Valutazione</h4>
+                <p>Rifletti onestamente... <a href="#" class="resource-link challenge-link" data-challenge-id="self-assessment" data-reward="10">Inizia Valutazione</a></p>
+                <!-- Qui potremmo inserire un iframe o un link a un form esterno, o un modal con domande -->
+             </div>
+        </section>
+
+        <!-- Sezione 2: Principi Chiave -->
+        <section id="principi">
+            <h2><i class="fas fa-key"></i> Principi Chiave della Mentalità Vincente</h2>
+            <p>[TESTO INTRODUTTIVO PRINCIPI...]</p>
+            <div class="card"><h3><i class="fas fa-shield-alt icon-danger"></i> 1. Accettare Pienamente il Rischio</h3><p>[TESTO COMPLETO]...</p><div class="mental-pitfalls"><h4><i class="fas fa-exclamation-triangle"></i> Trappola: Falsa Accettazione</h4><p>[TESTO COMPLETO]...</p></div></div>
+            <div class="card"><h3><i class="fas fa-dice icon-success"></i> 2. Pensare in Termini di Probabilità</h3><p>[TESTO COMPLETO]...</p></div>
+            <div class="card"><h3><i class="fas fa-list-check icon-secondary"></i> 3. Le 5 Verità Fondamentali</h3><p>[TESTO COMPLETO]...</p><ol class="principles-list"><li><strong>Tutto può succedere.</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li><li><strong>Non hai bisogno di sapere...</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li><li><strong>C'è una distribuzione casuale...</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li><li><strong>Un edge è solo una probabilità maggiore...</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li><li><strong>Ogni momento nel mercato è unico.</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li></ol><p><strong>Beneficio:</strong> ...</p><div class="challenge"><div class="token-reward"><i class="fas fa-coins"></i> 15 TRAD</div><h4><i class="fas fa-book"></i> Sfida: Assimilazione Verità</h4><p>Scegli una delle 5 Verità e scrivi... <a href="#" class="resource-link challenge-link" data-challenge-id="truth-assimilation" data-reward="15">Invia Riflessione</a></p></div></div>
+        </section>
+
+        <!-- Sezione 3: Fasi di Sviluppo -->
+        <section id="fasi-sviluppo">
+            <h2><i class="fas fa-layer-group"></i> Le Fasi di Sviluppo del Trader</h2>
+            <p>[TESTO INTRODUTTIVO FASI...]</p>
+            <div class="flex-container">
+                <div class="flex-item card"><h4><i class="fas fa-cogs"></i> 1. Fase Meccanica</h4><p>[TESTO COMPLETO]...</p></div>
+                <div class="flex-item card"><h4><i class="fas fa-lightbulb"></i> 2. Fase Soggettiva</h4><p>[TESTO COMPLETO]...</p></div>
+                <div class="flex-item card"><h4><i class="fas fa-brain"></i> 3. Fase Intuitiva</h4><p>[TESTO COMPLETO]...</p></div>
             </div>
-             <p id="reflection-error" class="form-error" style="display: none; color: var(--danger-color);"></p>
-            <button type="submit" class="form-button primary-button">Invia Riflessione</button>
-        </form>
-    </div>
-</div>
+        </section>
 
-<!-- Modal per Simulazioni (Conferma semplice) -->
-<div id="simulationModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" data-modal-id="simulationModal">&times;</span>
-        <h2 class="modal-title" id="simulation-title">Avvio Sfida Simulata</h2>
-        <p id="simulation-description" style="margin-bottom: 1.5rem;">Questa sfida richiede un impegno esterno alla piattaforma (es. trading simulato, monitoraggio). Conferma di aver compreso e di voler avviare/completare la sfida per ricevere i token.</p>
-        <form id="simulation-form">
-            <!-- Aggiungeremo qui i dettagli specifici della sfida da JS -->
-            <button type="submit" class="form-button success-button">Confermo Avvio/Completamento</button>
-        </form>
-    </div>
-</div>
+        <!-- Sezione 4: Framework per la Consistenza -->
+        <section id="framework">
+             <h2><i class="fas fa-tools"></i> Il Framework per la Consistenza: Operare come un Casinò</h2>
+             <p>[TESTO INTRODUTTIVO FRAMEWORK...]</p>
+             <h3>L'Esercizio Base:</h3>
+             <ol><li><strong>Scegli un Edge:</strong> ...</li><!-- Altri punti --><li><strong>Non Giudicare i Risultati Singoli:</strong> ...</li></ol>
+             <div class="card consistency-principles"><h3><i class="fas fa-clipboard-check"></i> I 7 Principi Guida</h3><p>Durante l'esercizio, mantieni questi principi...</p><ol class="principles-list"><li><strong>Definisco oggettivamente...</strong></li><!-- Altri principi --><li><strong>Capisco la necessità assoluta...</strong></li></ol></div>
+             <div class="challenge"> <div class="token-reward"><i class="fas fa-coins"></i> 50 TRAD</div><h4><i class="fas fa-play-circle"></i> Sfida Chiave: Serie di 20 Trade</h4><p>Applica l'esercizio... <a href="#" class="resource-link challenge-link" data-challenge-id="20-trade-series" data-reward="50">Inizia la Serie Simulata</a></p> </div>
+        </section>
 
-<!-- ========== FINE NUOVI MODAL ========== -->
+        <!-- Sezione 5: Risorse -->
+        <section id="risorse">
+             <h2><i class="fas fa-graduation-cap"></i> Risorse e Prossimi Passi</h2>
+             <p>[TESTO INTRODUTTIVO RISORSE...]</p>
+             <div class="resources"><h4><i class="fas fa-book"></i> Letture...</h4><ul>...</ul><h4><i class="fas fa-link"></i> Strumenti...</h4><ul>...</ul><h4><i class="fas fa-chalkboard-teacher"></i> Coaching...</h4><ul>...</ul></div>
+             <div class="challenge"><div class="token-reward"><i class="fas fa-coins"></i> 30 TRAD</div><h4><i class="fas fa-journal-whills"></i> Sfida: Diario Psicologico</h4><p>Tieni un diario per una settimana... <a href="#" class="resource-link challenge-link" data-challenge-id="psych-journal" data-reward="30">Scarica Template Diario</a></p></div>
+             <p style="margin-top: 2rem; text-align: center;">Ricorda: la consistenza non si trova nel mercato, ma dentro di te.</p>
+             <div style="text-align: center; margin-top: 2rem;"><a href="#top" class="cta-button">Torna su</a></div>
+        </section>
 
+    </main>
 
-<!-- ... (Footer e tag <script> per main.js) ... -->
+    <!-- Footer -->
+    <footer>
+        <p>&copy; <span id="current-year"></span> Trading Mindset Academy. Ispirato da "Trading in the Zone".</p>
+        <p>Disclaimer: Il trading comporta rischi. Questo sito è a scopo didattico.</p>
+    </footer>
+
+    <!-- Modals HTML (Login, Signup, Wallet - Struttura base) -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal"> <div class="modal-content"> <span class="close-modal" data-modal-id="loginModal">&times;</span> <h2 class="modal-title">Accedi</h2> <form id="login-form"> <div class="form-group"> <label for="login-username">Username (Simulato)</label> <input type="text" id="login-username" required placeholder="Inserisci il tuo username"> </div> <div class="form-group"> <label for="login-password">Password (Simulato)</label> <input type="password" id="login-password" required placeholder="Qualsiasi password"> </div> <button type="submit" class="form-button primary-button">Accedi</button> <div class="form-footer"> Non hai un account? <a href="#" class="switch-modal" data-from="loginModal" data-to="signupModal">Registrati</a> </div> </form> </div> </div>
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal"> <div class="modal-content"> <span class="close-modal" data-modal-id="signupModal">&times;</span> <h2 class="modal-title">Registrati</h2> <form id="signup-form"> <div class="form-group"> <label for="signup-username">Scegli Username (Simulato)</label> <input type="text" id="signup-username" required placeholder="Minimo 3 caratteri"> </div> <div class="form-group"> <label for="signup-password">Crea Password (Simulato)</label> <input type="password" id="signup-password" required placeholder="Minimo 6 caratteri"> </div> <button type="submit" class="form-button primary-button">Crea Account</button> <div class="form-footer"> Hai già un account? <a href="#" class="switch-modal" data-from="signupModal" data-to="loginModal">Accedi</a> </div> </form> </div> </div>
+    <!-- Wallet Modal -->
+    <div id="walletModal" class="modal"> <div class="modal-content"> <span class="close-modal" data-modal-id="walletModal">&times;</span> <h2 class="modal-title">Il Tuo Wallet TRAD</h2> <div id="wallet-connected-content" style="display: none;"> <div class="token-amount"> <i class="fas fa-coins"></i> <span id="wallet-token-count">0</span> </div> <div class="token-name">TRAD Token</div> <div class="wallet-info"> <p><strong>Indirizzo Wallet Collegato (Simulato):</strong></p> <div class="wallet-address" id="wallet-address"></div> </div> <div class="wallet-achievements"> <h3><i class="fas fa-trophy"></i> Achievements</h3> <div id="achievements-list"> <div class="no-achievements">Nessun achievement sbloccato.</div> </div> </div> <button id="disconnect-wallet-btn" class="form-button danger-button">Disconnetti Wallet (Simulato)</button> </div> <div id="wallet-connect-content"> <p class="modal-description">Collega il tuo wallet (simulato) per guadagnare e conservare i token TRAD.</p> <i class="fas fa-wallet modal-icon icon-success"></i> <button id="connect-wallet-btn" class="form-button success-button">Collega Wallet (Simulato)</button> <p class="modal-info-text">I token TRAD sbloccano contenuti e strumenti avanzati.</p> </div> </div> </div>
+
+    <!-- Notification Area -->
+    <div id="notification-area"></div>
+
+    <script src="js/main.js"></script>
+     <script>
+        // Aggiorna anno nel footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+     </script>
+</body>
+</html>
