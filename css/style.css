@@ -87,6 +87,7 @@ code, .concept { background-color: #e9ecef; padding: 3px 7px; border-radius: 4px
     margin-bottom: 1rem;
 }
 
+
 /* --- Header (Banner) --- */
 /* This style might be reused if you add banners to dynamic content */
 header.banner {
@@ -107,6 +108,7 @@ header.banner::before { /* Sfondo SVG pattern */
 }
 header.banner p { font-size: 1.15rem; opacity: 0.9; max-width: 700px; margin-left: auto; margin-right: auto;}
 
+
 /* --- Toolbar (<header> tag) --- */
 header.toolbar {
     background-color: var(--primary-color);
@@ -122,7 +124,27 @@ header.toolbar {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 .toolbar-left { display: flex; align-items: center; }
-.toolbar-logo { font-weight: bold; font-size: 1.3rem; margin-right: 25px; color: var(--light-text); }
+
+/* Styling for the logo container */
+.toolbar-logo {
+    font-weight: bold; /* Kept, but won't affect image */
+    font-size: 1.3rem; /* Kept, but won't affect image */
+    margin-right: 25px;
+    color: var(--light-text); /* Kept, but won't affect image */
+    display: flex; /* To center the image vertically if needed */
+    align-items: center;
+    height: 100%; /* Take full height of toolbar-left */
+}
+
+/* Styling for the logo image itself */
+.toolbar-logo img {
+    display: block; /* Remove potential extra space below image */
+    max-height: calc(var(--header-height) - 20px); /* Limit height, leaving some padding */
+    width: auto; /* Maintain aspect ratio */
+    vertical-align: middle; /* Try to vertically align, though display: block helps */
+}
+
+
 .login-tools { display: flex; align-items: center; gap: 10px; } /* Aggiunto gap */
 .login-button, .signup-button, .wallet-button, #logout-btn { border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; font-size: 0.9rem; }
 .login-button { background-color: transparent; color: var(--light-text); border: 1px solid var(--light-text); }
@@ -379,7 +401,7 @@ footer p { margin-bottom: 0.5rem; }
     .container { padding: 1rem; }
     .card { padding: 1.5rem; }
     .modal-content { width: 95%; margin: 5% auto;}
-    .toolbar-logo { font-size: 1.1rem;}
+    .toolbar-logo { margin-right: 15px; /* Reduce margin on smaller screens */ }
     .login-tools { gap: 5px; } /* Reduce gap */
     .login-tools button { padding: 6px 10px; font-size: 0.85rem; }
     .token-balance { padding: 4px 8px; font-size: 0.85rem;}
@@ -393,4 +415,5 @@ footer p { margin-bottom: 0.5rem; }
     h3 { font-size: 1.3rem; }
     .token-balance { display: none !important; } /* Hide token balance on very small screens if needed */
     .login-tools { flex-wrap: wrap; justify-content: flex-end; } /* Allow wrapping */
+    .toolbar-left { flex-grow: 1; } /* Allow logo area to grow to push buttons to the right */
 }

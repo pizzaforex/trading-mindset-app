@@ -14,16 +14,21 @@
     <!-- Sfondo (opzionale, gestito da CSS) -->
     <div class="parallax-bg" id="parallaxBg"></div>
 
-    <!-- Toolbar (Unchanged) -->
+    <!-- Toolbar -->
     <header class="toolbar">
         <div class="toolbar-left">
-            <div class="toolbar-logo">Trading Mindset</div>
+            <!-- Logo Immagine -->
+            <div class="toolbar-logo">
+                <img src="assets/logo.png" alt="Trading Mindset Logo">
+            </div>
+            <!-- Potremmo reinserire qui strumenti futuri -->
         </div>
         <div class="login-tools">
             <div class="token-balance" id="token-balance"><i class="fas fa-coins token-icon"></i> <span id="token-count">0</span> TRAD</div>
             <button class="wallet-button" id="wallet-button"><i class="fas fa-wallet"></i> Wallet</button>
             <button class="login-button" id="login-btn">Accedi</button>
             <button class="signup-button" id="signup-btn">Registrati</button>
+            <!-- Aggiungeremo qui il nome utente e il logout dopo il login -->
             <div id="user-info" style="display: none;">
                  <span id="username-display" style="margin-right: 15px;"></span>
                  <button id="logout-btn" class="login-button" style="border-color: var(--danger-color); color: var(--danger-color);">Logout</button>
@@ -53,13 +58,13 @@
         </div>
     </main>
 
-    <!-- Footer (Unchanged) -->
+    <!-- Footer -->
     <footer>
         <p>&copy; 2024 Trading Mindset Academy. Ispirato da "Trading in the Zone" di Mark Douglas.</p>
         <p>Disclaimer: Il trading comporta rischi significativi. Questo sito è solo a scopo didattico.</p>
     </footer>
 
-    <!-- Modals HTML (Login, Signup, Wallet) (Unchanged) -->
+    <!-- Modals HTML (Login, Signup, Wallet) -->
     <!-- Login Modal -->
     <div id="loginModal" class="modal"> <div class="modal-content"> <span class="close-modal" data-modal-id="loginModal">&times;</span> <h2 class="modal-title">Accedi</h2> <form id="login-form"> <div class="form-group"> <label for="login-email">Email</label> <input type="email" id="login-email" required> </div> <div class="form-group"> <label for="login-password">Password</label> <input type="password" id="login-password" required> </div> <button type="submit" class="form-button primary-button">Accedi</button> <div class="form-footer"> Non hai un account? <a href="#" class="switch-modal" data-from="loginModal" data-to="signupModal">Registrati</a> </div> </form> </div> </div>
     <!-- Signup Modal -->
@@ -67,7 +72,7 @@
     <!-- Wallet Modal -->
     <div id="walletModal" class="modal"> <div class="modal-content"> <span class="close-modal" data-modal-id="walletModal">&times;</span> <h2 class="modal-title">Il Tuo Wallet TRAD</h2> <div id="wallet-connected-content" style="display: none;"> <div class="token-amount"> <i class="fas fa-coins"></i> <span id="wallet-token-count">0</span> </div> <div class="token-name">TRAD Token</div> <div class="wallet-info"> <p><strong>Indirizzo Wallet Collegato:</strong></p> <div class="wallet-address" id="wallet-address"></div> </div> <div class="wallet-achievements"> <h3><i class="fas fa-trophy"></i> Achievements</h3> <div id="achievements-list"> <div class="no-achievements">Nessun achievement sbloccato.</div> </div> </div> <button id="disconnect-wallet-btn" class="form-button danger-button" style="margin-top: 20px;">Disconnetti Wallet</button> </div> <div id="wallet-connect-content"> <p class="modal-description">Collega il tuo wallet per guadagnare e conservare i token TRAD.</p> <i class="fas fa-wallet modal-icon icon-success"></i> <button id="connect-wallet-btn" class="form-button success-button">Collega Wallet</button> <p class="modal-info-text">I token TRAD sbloccano contenuti e strumenti avanzati.</p> </div> </div> </div>
 
-    <!-- Notification Area (Unchanged) -->
+    <!-- Notification Area -->
     <div id="notification-area">
         <!-- Le notifiche verranno aggiunte qui dinamicamente -->
     </div>
