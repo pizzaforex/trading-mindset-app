@@ -1,3 +1,6 @@
+// Incolla qui il codice JS COMPLETO della mia risposta precedente
+// (quello che inizia con document.addEventListener('DOMContentLoaded', () => { ... })
+// e include loadStateFromLocalStorage, saveStateToLocalStorage, etc.
 document.addEventListener('DOMContentLoaded', () => {
     // --- State Variables ---
     let isLoggedIn = false;
@@ -33,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     const notificationArea = document.getElementById('notification-area');
     const challengeLinks = document.querySelectorAll('.challenge-link');
-    const navLinks = document.querySelectorAll('.nav-link');
+    const navLinks = document.querySelectorAll('.nav-link'); // Seleziona i link di navigazione
 
     // Wallet Modal Elements
     const walletConnectedContent = document.getElementById('wallet-connected-content');
@@ -87,29 +90,36 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modal) {
             if (modalId === 'walletModal') updateWalletModalUI();
             modal.style.display = "block";
-            // Optional: Focus su primo input
-             const firstInput = modal.querySelector('input');
-             if (firstInput) firstInput.focus();
+            // Optional: Focus su primo input visibile
+             const firstInput = modal.querySelector('input:not([type=hidden]):not([disabled])');
+             if (firstInput) setTimeout(() => firstInput.focus(), 50); // Timeout per transizione
         } else {
             console.error(`Modal with id ${modalId} not found.`);
         }
     }
 
-    function closeModal(modalId) { /* ... come prima ... */ }
-    function switchModalUI(fromModalId, toModalId) { /* ... come prima ... */ }
+    function closeModal(modalId) {
+         const modal = document.getElementById(modalId);
+         if (modal) modal.style.display = "none";
+    }
+    function switchModalUI(fromModalId, toModalId) {
+         closeModal(fromModalId);
+         openModal(toModalId);
+    }
 
     // --- Login/Signup/Logout Functions (Simulated & with LocalStorage) ---
     function handleLogin(event) {
         event.preventDefault();
         const enteredUsername = document.getElementById('login-username')?.value.trim();
-        // Qui in una app reale ci sarebbe una chiamata API per verificare le credenziali
-        if (!enteredUsername) {
-             showNotification("Inserisci un username.", 'error');
-             return;
-        }
-        username = enteredUsername; // Usa l'username inserito
+        if (!enteredUsername) { showNotification("Inserisci un username.", 'error'); return; }
+        // In un sistema reale: verifica le credenziali
+        username = enteredUsername;
         isLoggedIn = true;
-        saveStateToLocalStorage(); // Salva il nuovo stato
+        // Carica i dati SPECIFICI di questo utente (se avessimo un DB)
+        // Per ora, localStorage è globale, quindi carichiamo quello che c'è.
+        // Se l'username cambia, potremmo voler resettare token/achievements?
+        // Per semplicità, ora non lo facciamo.
+        saveStateToLocalStorage();
         updateLoginStateUI();
         closeModal('loginModal');
         showNotification(`Bentornato, ${username}!`, 'success');
@@ -119,39 +129,36 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleSignup(event) {
         event.preventDefault();
          const enteredUsername = document.getElementById('signup-username')?.value.trim();
-          if (!enteredUsername || enteredUsername.length < 3) {
-             showNotification("Username non valido (minimo 3 caratteri).", 'error');
-             return;
-         }
-        // Qui in una app reale ci sarebbe una chiamata API per registrare l'utente
-        username = enteredUsername;
-        isLoggedIn = true;
-        // Reset token/achievements per nuovo utente (o potremmo caricarli da un DB)
-        currentTokens = 0;
-        userAchievements = [];
-        walletConnected = false; // Nuovo utente non ha wallet connesso di default
-        walletAddress = '';
-        saveStateToLocalStorage(); // Salva il nuovo stato
-        updateLoginStateUI();
-        closeModal('signupModal');
-        showNotification(`Registrazione completata! Benvenuto, ${username}!`, 'success');
-        console.log("User signed up and logged in:", username);
+         if (!enteredUsername || enteredUsername.length < 3) { showNotification("Username non valido (minimo 3 caratteri).", 'error'); return; }
+         // In un sistema reale: verifica se username esiste, poi crea utente
+         username = enteredUsername;
+         isLoggedIn = true;
+         // Reset token/achievements per nuovo utente SIMULATO
+         currentTokens = 0;
+         userAchievements = [];
+         walletConnected = false;
+         walletAddress = '';
+         saveStateToLocalStorage(); // Salva il nuovo stato pulito
+         updateLoginStateUI();
+         closeModal('signupModal');
+         showNotification(`Registrazione completata! Benvenuto, ${username}!`, 'success');
+         console.log("User signed up and logged in:", username);
     }
 
     function handleLogout() {
         isLoggedIn = false;
+        // Non resettiamo localStorage qui, così un utente può fare login
+        // di nuovo con lo stesso username e ritrovare il suo stato.
+        // Resettiamo solo lo stato attivo della sessione.
+        const loggedOutUsername = username; // Conserva per messaggio
         username = '';
-        // Manteniamo token/achievements nel localStorage? O li resettiamo?
-        // Dipende se vogliamo che un utente possa "recuperare" il suo stato
-        // semplicemente facendo login con lo stesso username.
-        // Per ora, li manteniamo, ma resettiamo lo stato UI.
-        localStorage.setItem(LS_KEYS.LOGGED_IN, 'false'); // Aggiorna solo lo stato login
-        localStorage.removeItem(LS_KEYS.USERNAME); // Rimuovi username
+        localStorage.setItem(LS_KEYS.LOGGED_IN, 'false');
+        localStorage.removeItem(LS_KEYS.USERNAME); // Rimuovi solo username attivo
 
         updateLoginStateUI();
         updateTokenDisplayUI();
-        updateWalletModalUI();
-        showNotification("Logout effettuato.", 'info');
+        // Non serve aggiornare il modal wallet qui, verrà fatto se l'utente lo apre
+        showNotification(`Logout effettuato da ${loggedOutUsername}.`, 'info');
         console.log("User logged out");
     }
 
@@ -159,8 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function connectWallet() {
         console.log("Connecting wallet (simulated)...");
         walletConnected = true;
-        // Genera un indirizzo fittizio se non ne esiste uno salvato
-        if (!walletAddress) {
+        if (!walletAddress) { // Genera e salva indirizzo solo se non esiste
              walletAddress = '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
         }
 
@@ -171,12 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!userAchievements.some(ach => ach.id === achievementId)) {
             currentTokens += reward;
             userAchievements.push({ id: achievementId, name: achievementName, tokens: reward });
-            showNotification(`Wallet collegato! Hai ricevuto ${reward} TRAD.`, 'success');
+            showNotification(`Wallet collegato! +${reward} TRAD.`, 'success');
         } else {
-            showNotification(`Wallet collegato.`, 'info'); // Non dare più token
+            showNotification(`Wallet collegato.`, 'info');
         }
 
-        saveStateToLocalStorage(); // Salva il nuovo stato wallet e token/achievement
+        saveStateToLocalStorage();
         updateWalletModalUI();
         updateTokenDisplayUI();
     }
@@ -184,10 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function disconnectWallet() {
         console.log("Disconnecting wallet (simulated)...");
         walletConnected = false;
-        walletAddress = ''; // Rimuovi indirizzo
-        // Decidi se rimuovere l'achievement o mantenere i token
-        // userAchievements = userAchievements.filter(ach => ach.id !== 'wallet-connect');
-        saveStateToLocalStorage(); // Salva lo stato disconnesso
+        walletAddress = ''; // Rimuovi indirizzo dallo stato attivo
+        // Manteniamo i token e gli achievement, ma salviamo lo stato disconnesso
+        localStorage.setItem(LS_KEYS.WALLET_CONNECTED, 'false');
+        localStorage.removeItem(LS_KEYS.WALLET_ADDRESS);
+
         updateWalletModalUI();
         updateTokenDisplayUI();
         showNotification("Wallet disconnesso.", 'info');
@@ -205,125 +212,44 @@ document.addEventListener('DOMContentLoaded', () => {
          if (userAchievements.some(ach => ach.id === challengeId)) { showNotification("Hai già completato questa sfida!", 'info'); return; }
 
          console.log(`Starting challenge: ${challengeId}, Reward: ${reward} TRAD`);
-         showNotification(`Inizio sfida "${challengeId.replace(/-/g,' ')}"...`, 'info');
-
-         // SIMULAZIONE COMPLETAMENTO (In futuro qui si aprirebbe il modal interattivo)
+         // Qui apriremo i modal interattivi nel prossimo step
+         // Per ora, simuliamo ancora il completamento diretto
+         showNotification(`Simulazione completamento sfida "${challengeId.replace(/-/g,' ')}"...`, 'info');
          setTimeout(() => {
              completeChallenge(challengeId, reward);
-         }, 2000);
+         }, 1500); // Riduciamo il timeout per test più rapidi
      }
 
     function completeChallenge(challengeId, tokenReward) {
-        // Controllo ridondante
-        if (userAchievements.some(ach => ach.id === challengeId)) {
-             console.warn(`Attempted to complete already completed challenge: ${challengeId}`);
-             return;
-        }
+        if (userAchievements.some(ach => ach.id === challengeId)) { console.warn(`Challenge already completed: ${challengeId}`); return; }
 
         console.log(`Challenge completed: ${challengeId}`);
         currentTokens += tokenReward;
-
         let achievementName = challengeId.replace(/-/g, ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase());
-         const nameMap = { /* ... come prima ... */
+        const nameMap = {
              'self-assessment': 'Auto-Valutazione Completata',
              'truth-assimilation': 'Assimilazione Verità Fondamentali',
              '20-trade-series': 'Serie 20 Trade Eseguita',
              'psych-journal': 'Diario Psicologico Compilato',
+             'wallet-connect': 'Wallet Collegato' // Aggiunto per coerenza
          };
-         achievementName = nameMap[challengeId] || achievementName;
+        achievementName = nameMap[challengeId] || achievementName;
 
         userAchievements.push({ id: challengeId, name: achievementName, tokens: tokenReward });
-
-        saveStateToLocalStorage(); // Salva token e achievement aggiornati
+        saveStateToLocalStorage(); // Salva TUTTO lo stato aggiornato
         updateTokenDisplayUI();
         showNotification(`Sfida "${achievementName}" completata! +${tokenReward} TRAD.`, 'success');
-        if(walletModalEl.style.display === 'block') {
-            updateWalletModalUI(); // Aggiorna il modal se aperto
-        }
+        if(walletModalEl.style.display === 'block') updateWalletModalUI();
     }
 
     // --- Notification Function ---
-    function showNotification(message, type = 'success') {
-        const notification = document.createElement('div');
-        notification.classList.add('notification');
-        notification.classList.add(type); // Aggiunge classe success, error, o info
-
-        let iconClass = 'fa-check-circle';
-        if (type === 'error') iconClass = 'fa-times-circle';
-        else if (type === 'info') iconClass = 'fa-info-circle';
-
-        notification.innerHTML = `<i class="fas ${iconClass}"></i> ${message}`;
-        notificationArea.appendChild(notification);
-
-        // Forza reflow
-        void notification.offsetWidth;
-
-        // Mostra
-        notification.classList.add('show');
-
-        // Nascondi e rimuovi
-        setTimeout(() => {
-            notification.classList.remove('show');
-            notification.addEventListener('transitionend', () => notification.remove());
-        }, 4000);
-    }
+    function showNotification(message, type = 'success') { /* ... codice come prima ... */ }
 
     // --- UI Update Functions ---
-    function updateLoginStateUI() {
-        if (isLoggedIn) {
-            loginBtn.style.display = 'none';
-            signupBtn.style.display = 'none';
-            userInfoEl.style.display = 'flex';
-            usernameDisplayEl.textContent = `Ciao, ${username}`;
-            logoutBtn.style.display = 'inline-block';
-        } else {
-            loginBtn.style.display = 'inline-block';
-            signupBtn.style.display = 'inline-block';
-            userInfoEl.style.display = 'none';
-            usernameDisplayEl.textContent = '';
-            logoutBtn.style.display = 'none';
-        }
-    }
-
-    function updateTokenDisplayUI() {
-        tokenCountEl.textContent = currentTokens;
-        tokenBalanceEl.style.display = (isLoggedIn && walletConnected) ? 'flex' : 'none';
-    }
-
-    function updateWalletModalUI() {
-        if (walletConnected) {
-            walletConnectedContent.style.display = 'block';
-            walletConnectContent.style.display = 'none';
-            walletTokenCountEl.textContent = currentTokens;
-            walletAddressEl.textContent = walletAddress || 'Indirizzo non disponibile'; // Mostra indirizzo salvato
-
-            achievementsListEl.innerHTML = ''; // Pulisce
-            if (userAchievements.length > 0) {
-                 userAchievements.sort((a,b) => a.name.localeCompare(b.name));
-                 userAchievements.forEach(ach => { /* ... come prima ... */
-                     const div = document.createElement('div');
-                     div.classList.add('achievement');
-                     let iconClass = 'fa-trophy'; // Default
-                     if (ach.id.includes('quiz') || ach.id.includes('assessment')) iconClass = 'fa-question-circle';
-                     if (ach.id.includes('series') || ach.id.includes('exercise')) iconClass = 'fa-dumbbell';
-                     if (ach.id.includes('journal')) iconClass = 'fa-book-open';
-                     if (ach.id.includes('truth')) iconClass = 'fa-check-double';
-                     if (ach.id === 'wallet-connect') iconClass = 'fa-link';
-
-                     div.innerHTML = `<div class="achievement-name"><i class="fas ${iconClass}" style="color: var(--secondary-color);"></i> ${ach.name}</div> <div class="achievement-tokens"><i class="fas fa-coins"></i> ${ach.tokens} TRAD</div>`;
-                     achievementsListEl.appendChild(div);
-                 });
-            } else {
-                 achievementsListEl.innerHTML = '<div class="no-achievements">Nessun achievement sbloccato.</div>';
-            }
-
-        } else {
-            walletConnectedContent.style.display = 'none';
-            walletConnectContent.style.display = 'block';
-        }
-    }
-
-    function highlightActiveNavLink() { /* ... come prima ... */ }
+    function updateLoginStateUI() { /* ... codice come prima ... */ }
+    function updateTokenDisplayUI() { /* ... codice come prima ... */ }
+    function updateWalletModalUI() { /* ... codice come prima ... */ }
+    function highlightActiveNavLink() { /* ... codice come prima ... */ }
 
     // --- Event Listeners ---
     loginBtn?.addEventListener('click', () => openModal('loginModal'));
@@ -336,37 +262,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('login-form')?.addEventListener('submit', handleLogin);
     document.getElementById('signup-form')?.addEventListener('submit', handleSignup);
 
-    closeModals.forEach(btn => {
-        btn.addEventListener('click', () => closeModal(btn.dataset.modalId));
-    });
-
-    switchModals.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            switchModalUI(link.dataset.from, link.dataset.to);
-        });
-    });
-
-     challengeLinks.forEach(link => {
-        link.addEventListener('click', handleChallengeClick);
-     });
-
+    closeModals.forEach(btn => { btn.addEventListener('click', () => closeModal(btn.dataset.modalId)); });
+    switchModals.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); switchModalUI(link.dataset.from, link.dataset.to); }); });
+    challengeLinks.forEach(link => { link.addEventListener('click', handleChallengeClick); });
     window.addEventListener('scroll', highlightActiveNavLink);
-    // Chiudi modal con Escape
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            closeModal('loginModal');
-            closeModal('signupModal');
-            closeModal('walletModal');
-            // Aggiungi altri modal se necessario
-        }
-    });
+    window.addEventListener('keydown', (event) => { if (event.key === 'Escape') { ['loginModal', 'signupModal', 'walletModal'].forEach(closeModal); } });
 
     // --- Initialization ---
-    loadStateFromLocalStorage(); // Carica stato all'avvio
+    loadStateFromLocalStorage(); // CARICA STATO ALL'AVVIO!
     updateLoginStateUI();
-    updateWalletModalUI();
-    updateTokenDisplayUI();
+    updateWalletModalUI(); // Aggiorna UI modal wallet basato su stato caricato
+    updateTokenDisplayUI(); // Aggiorna UI token display basato su stato caricato
     highlightActiveNavLink();
 
     console.log("Trading Mindset App Initialized with LocalStorage Persistence");

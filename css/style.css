@@ -1,6 +1,80 @@
-/* ... (TUTTI gli stili CSS della versione precedente, inclusi :root, reset, body, header.banner, etc.) ... */
+/* Variabili CSS */
+:root {
+    --primary-color: #0a2e4d; /* Blu scuro */
+    --secondary-color: #1a6ca8; /* Blu medio */
+    --accent-color: #ff9800; /* Arancione */
+    --success-color: #4CAF50; /* Verde */
+    --danger-color: #f44336; /* Rosso */
+    --light-bg: #f8f9fa; /* Sfondo leggermente grigio */
+    --card-bg: #ffffff; /* Sfondo card */
+    --dark-text: #333333;
+    --light-text: #ffffff;
+    --grey-text: #6c757d; /* Grigio per testo secondario */
+    --border-color: #dee2e6; /* Colore bordi */
+    --header-height: 60px; /* Altezza toolbar */
+    --nav-height: 45px; /* Altezza nav */
+}
 
-/* --- Header (Toolbar) Assicurati che questi stili siano presenti/aggiornati --- */
+/* Reset Base & Box Sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-height) + var(--nav-height) + 20px); /* Offset per link interni */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    line-height: 1.7;
+    color: var(--dark-text);
+    background-color: var(--light-bg);
+    /* Rimuovi padding-top se presente */
+}
+
+/* --- Sfondo Parallax --- */
+.parallax-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 800 800"><g fill="none" stroke="%230a2e4d" stroke-width=".3"><path d="M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63"/><path d="M-31 229L237 261 390 382 731 737M520 660L309 538 295 764 40 599 309 538 390 382 102 382 40 599 -69 737 127 880"/><path d="M520 660L731 737 390 382 520 660 309 538 40 599 -69 737 520 660 295 764 390 382 309 538"/></g></svg>');
+    background-size: cover;
+    z-index: -1; /* DEVE essere negativo */
+    opacity: 0.05;
+    background-attachment: fixed;
+}
+
+/* --- Layout Contenitore --- */
+.container {
+    max-width: 1000px;
+    margin-left: auto; /* Centra */
+    margin-right: auto; /* Centra */
+    padding: 1rem 2rem;
+}
+
+/* --- Tipografia --- */
+h1, h2, h3 { line-height: 1.3; }
+h1 { margin-bottom: 0.5rem; font-size: 2.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+h2 { color: var(--primary-color); border-bottom: 3px solid var(--secondary-color); padding-bottom: 0.6rem; margin-bottom: 1.8rem; font-size: 2rem; display: flex; align-items: center; }
+h2 i { margin-right: 12px; color: var(--secondary-color); font-size: 1.8rem; }
+h3 { color: var(--secondary-color); font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1rem; }
+h4 { font-size: 1.15rem; margin-bottom: 0.8rem; color: var(--primary-color); }
+p { margin-bottom: 1.2rem; }
+ul, ol { margin-bottom: 1.2rem; padding-left: 25px; }
+li { margin-bottom: 0.5rem; }
+a { color: var(--secondary-color); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--primary-color); text-decoration: underline; }
+code, .concept { background-color: #e9ecef; padding: 3px 7px; border-radius: 4px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; color: var(--secondary-color); font-size: 0.95em; }
+
+/* --- Header (Banner) --- */
+header.banner { /* ... Stili banner come prima ... */ }
+
+/* --- Toolbar (<header> tag) --- */
 header.toolbar {
     background-color: var(--primary-color);
     color: var(--light-text);
@@ -9,90 +83,77 @@ header.toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    position: sticky; /* Fissa in alto */
+    top: 0;          /* Si attacca al top */
+    z-index: 1000;     /* Sopra la maggior parte degli elementi */
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-.toolbar-logo {
-    font-weight: bold;
-    font-size: 1.4rem;
-    margin-right: 25px;
-    color: var(--light-text);
-    letter-spacing: 0.5px;
-}
-.login-tools { display: flex; align-items: center; gap: 12px; }
-/* ... stili per .login-button, .signup-button, .wallet-button, .token-balance ... */
-#user-info {
-    display: none; /* Nascosto di default */
-    align-items: center;
-    color: var(--light-text);
-    font-weight: 600;
-    margin-left: 10px;
-}
-#username-display {
-    margin-right: 15px;
-    font-size: 0.95rem;
-    opacity: 0.9;
-}
-#logout-btn {
-    padding: 7px 12px;
-    font-size: 0.85rem;
-    border: 1px solid var(--danger-color);
-    background-color: transparent;
-    color: var(--danger-color);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-#logout-btn:hover {
-    background-color: rgba(244, 67, 54, 0.1);
-    color: #ff5c5c;
-    border-color: #ff5c5c;
-}
+/* ... Stili interni toolbar: logo, login-tools, etc. come prima ... */
 
-
-/* --- Barra Navigazione Assicurati che questi stili siano presenti/aggiornati --- */
+/* --- Barra Navigazione (<nav> tag) --- */
 nav {
     background-color: #ffffff;
     height: var(--nav-height);
-    position: sticky;
-    top: var(--header-height);
-    z-index: 999;
+    position: sticky;           /* Fissa */
+    top: var(--header-height); /* Si attacca sotto la toolbar */
+    z-index: 999;             /* Sotto la toolbar, sopra il contenuto */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: center;
     align-items: center;
 }
-nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; height: 100%; gap: 10px; }
-nav ul li a { text-decoration: none; color: var(--secondary-color); font-weight: 600; padding: 0 18px; border-radius: 4px; transition: background-color 0.25s ease-out, color 0.25s ease-out, border-bottom-color 0.25s ease-out; font-size: 1rem; line-height: var(--nav-height); display: block; height: 100%; border-bottom: 3px solid transparent; }
-nav ul li a:hover { background-color: #e9f2fa; color: var(--primary-color); border-bottom-color: #a0c7e4; text-decoration: none; }
-nav ul li a.active { background-color: transparent; color: var(--primary-color); border-bottom-color: var(--secondary-color); font-weight: 700; }
+/* ... Stili interni nav: ul, li, a, a.active come prima ... */
 
-/* --- Notifiche Assicurati che questi stili siano presenti/aggiornati --- */
-#notification-area {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    z-index: 1002;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
+/* --- CONTENUTO PRINCIPALE (<main> tag) --- */
+main.container {
+    position: relative; /* FONDAMENTALE: Crea un contesto di stacking */
+    z-index: 1;         /* FONDAMENTALE: Assicura che stia sopra lo sfondo */
+    background-color: transparent; /* Assicura che non abbia sfondo che copra il parallax */
+     /* Il padding per evitare sovrapposizione con header/nav NON serve con sticky */
 }
-.notification { /* Stili base come prima */ }
-.notification.show { /* Stili show come prima */ }
-.notification i { /* Stili icone come prima */ }
-.notification.success { background-color: var(--success-color); }
-.notification.error { background-color: var(--danger-color); }
-.notification.info { background-color: var(--secondary-color); }
 
-/* --- Modals (Input specifici) --- */
-/* Assicurati che gli input/label nei modal siano ben stilizzati */
-.modal-content .form-group input::placeholder {
-    color: #aaa;
-    font-style: italic;
-    font-size: 0.9em;
+/* --- Sezioni Principali (<section> tag) --- */
+main.container section {
+    padding: 3.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+main.container section:last-of-type { border-bottom: none; padding-bottom: 1rem; }
+
+/* --- Cards --- */
+.card { /* ... stili card come prima ... */ }
+.flex-container { /* ... stili flex come prima ... */ }
+.flex-item { /* ... stili flex-item come prima ... */ }
+
+/* --- Elementi Specifici (Risorse, Challenge, etc.) --- */
+/* ... stili per principles-list, consistency-principles, resources, challenge, mental-pitfalls, tooltip, token-reward come prima ... */
+
+/* --- Pulsanti --- */
+/* ... stili per cta-button, form-button, danger-button, etc. come prima ... */
+
+/* --- Modals --- */
+/* ... stili modals come prima ... */
+
+/* --- Notifiche --- */
+/* ... stili notifiche come prima ... */
+
+/* --- Footer --- */
+/* ... stili footer come prima ... */
+
+/* --- Icon Helpers --- */
+.icon-danger { color: var(--danger-color); }
+.icon-success { color: var(--success-color); }
+.icon-secondary { color: var(--secondary-color); }
+.icon-accent { color: var(--accent-color); }
+.icon-primary { color: var(--primary-color); }
+
+/* --- Responsive (Esempio base) --- */
+@media (max-width: 768px) {
+    /* ... stili responsive come prima ... */
+    html {
+         /* Riduci l'offset su mobile se necessario */
+         scroll-padding-top: calc(var(--header-height) + var(--nav-height) + 10px);
+    }
+    .container { padding: 1rem; } /* Riduci padding laterale */
 }
