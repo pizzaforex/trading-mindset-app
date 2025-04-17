@@ -1,350 +1,403 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- State Variables ---
-    let isLoggedIn = false;
-    let walletConnected = false;
-    let currentTokens = 0;
-    let userAchievements = []; // Rinominato per chiarezza
-    let username = '';
+    // --- State Variables (aggiunte per il simulatore) ---
+    // ... (variabili precedenti: isLoggedIn, walletConnected, etc.) ...
+    let simTradeNumber = 1;
+    let simWins = 0;
+    let simLosses = 0;
+    let simTotalPnl = 0;
+    let simCurrentPrice = 0;
+    let simEntryPrice = 0;
+    let simStopLossPrice = 0;
+    let simTakeProfitPrice = 0;
+    let simDirection = null; // 'Long' o 'Short'
+    let simIntervalId = null; // Per l'animazione del prezzo
+    let isSimulating = false; // Blocca interazioni durante l'animazione
 
-    // --- Element Selectors ---
-    const loginBtn = document.getElementById('login-btn');
-    const signupBtn = document.getElementById('signup-btn');
-    const walletBtn = document.getElementById('wallet-button');
-    const loginModalEl = document.getElementById('loginModal');
-    const signupModalEl = document.getElementById('signupModal');
-    const walletModalEl = document.getElementById('walletModal');
-    const closeModals = document.querySelectorAll('.close-modal');
-    const switchModals = document.querySelectorAll('.switch-modal');
-    const tokenBalanceEl = document.getElementById('token-balance');
-    const tokenCountEl = document.getElementById('token-count');
-    const userInfoEl = document.getElementById('user-info');
-    const usernameDisplayEl = document.getElementById('username-display');
-    const logoutBtn = document.getElementById('logout-btn');
-    const notificationArea = document.getElementById('notification-area');
-    const challengeLinks = document.querySelectorAll('.challenge-link');
+    // --- Configurazioni Simulatore ---
+    const SIM_CONFIG = {
+        TOTAL_TRADES: 20,
+        STOP_LOSS_POINTS: 5,  // Punti di stop loss
+        TAKE_PROFIT_POINTS: 10, // Punti di take profit (R:R 1:2)
+        EDGE_PROBABILITY: 0.60, // 60% probabilità che il *primo* movimento sia a favore
+        TICK_SIZE: 1,         // Movimento minimo del prezzo per step
+        TICK_INTERVAL: 150,   // Millisecondi tra gli step di prezzo (velocità simulazione)
+        MAX_PRICE_MOVE_PER_TICK: 2, // Massimo movimento casuale per tick
+        BAR_MIN_POS: 0, // Posizione % minima barra prezzo
+        BAR_MAX_POS: 100 // Posizione % massima barra prezzo
+    };
 
-    // Wallet Modal Elements
-    const walletConnectedContent = document.getElementById('wallet-connected-content');
-    const walletConnectContent = document.getElementById('wallet-connect-content');
-    const walletTokenCountEl = document.getElementById('wallet-token-count');
-    const walletAddressEl = document.getElementById('wallet-address');
-    const achievementsListEl = document.getElementById('achievements-list');
-    const connectWalletBtn = document.getElementById('connect-wallet-btn');
-    const disconnectWalletBtn = document.getElementById('disconnect-wallet-btn');
+    // --- Element Selectors (aggiunti per il simulatore) ---
+    // ... (selettori precedenti) ...
+    const tradeSimulatorModalEl = document.getElementById('tradeSimulatorModal');
+    const simulatorUiEl = document.getElementById('simulator-ui');
+    const currentTradeNumberEl = document.getElementById('current-trade-number');
+    const totalPnlEl = document.getElementById('total-pnl');
+    const winRateEl = document.getElementById('win-rate');
+    const signalAreaEl = document.getElementById('signal-area');
+    const signalDetailsEl = document.getElementById('signal-details');
+    const signalTradeNumberEl = document.getElementById('signal-trade-number');
+    const enterTradeBtn = document.getElementById('enter-trade-btn');
+    const executionAreaEl = document.getElementById('execution-area');
+    const executionTradeNumberEl = document.getElementById('execution-trade-number');
+    const executionDirectionEl = document.getElementById('execution-direction');
+    const stopLossPointsEl = document.getElementById('stop-loss-points');
+    const takeProfitPointsEl = document.getElementById('take-profit-points');
+    const currentPriceEl = document.getElementById('current-price');
+    const priceBarContainer = document.querySelector('.price-bar-container');
+    const priceBarEl = document.getElementById('price-bar');
+    const tradeStatusEl = document.getElementById('trade-status');
+    const nextTradeBtn = document.getElementById('next-trade-btn');
+    const finalResultsAreaEl = document.getElementById('final-results-area');
+    const finalTotalPnlEl = document.getElementById('final-total-pnl');
+    const finalWinRateEl = document.getElementById('final-win-rate');
+    const claimRewardBtn = document.getElementById('claim-reward-btn');
+    const resetSimulationBtn = document.getElementById('reset-simulation-btn');
+
+
+    // --- Core Functions (load/save state - aggiorna per includere stato simulatore se vuoi persistenza) ---
+    // ... (loadStateFromLocalStorage, saveDataToLocalStorage - potresti aggiungere variabili sim*) ...
+
 
     // --- Modal Functions ---
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            if (modalId === 'walletModal') updateWalletModalUI(); // Aggiorna UI prima di mostrare
-            modal.style.display = "block";
-        }
-    }
-
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    function switchModalUI(fromModalId, toModalId) {
-        closeModal(fromModalId);
-        openModal(toModalId);
-    }
-
-    // --- Login/Signup/Logout Functions (Simulated) ---
-    function handleLogin(event) {
-        event.preventDefault();
-        // Simulate getting username from form
-        username = document.getElementById('login-email').value.split('@')[0]; // Simple username extraction
-        isLoggedIn = true;
-        updateLoginStateUI();
-        closeModal('loginModal');
-        showNotification("Accesso effettuato!", 'info');
-        console.log("User logged in:", username);
-    }
-
-     function handleSignup(event) {
-        event.preventDefault();
-        // Simulate getting username from form
-        username = document.getElementById('signup-name').value || 'NuovoUtente';
-        isLoggedIn = true;
-        updateLoginStateUI();
-        closeModal('signupModal');
-        showNotification(`Registrazione completata! Benvenuto, ${username}!`, 'success');
-        console.log("User signed up and logged in:", username);
-    }
-
-    function handleLogout() {
-        isLoggedIn = false;
-        username = '';
-        // Potremmo anche disconnettere il wallet al logout, o chiedere all'utente
-        // walletConnected = false;
-        // userAchievements = [];
-        // currentTokens = 0;
-        updateLoginStateUI();
-        updateTokenDisplayUI();
-        updateWalletModalUI(); // Aggiorna il modal wallet allo stato disconnesso
-        showNotification("Logout effettuato.", 'info');
-        console.log("User logged out");
-    }
-
-    function updateLoginStateUI() {
-        if (isLoggedIn) {
-            loginBtn.style.display = 'none';
-            signupBtn.style.display = 'none';
-            userInfoEl.style.display = 'flex';
-            usernameDisplayEl.textContent = `Ciao, ${username}`;
-            logoutBtn.style.display = 'inline-block';
-        } else {
-            loginBtn.style.display = 'inline-block';
-            signupBtn.style.display = 'inline-block';
-            userInfoEl.style.display = 'none';
-            usernameDisplayEl.textContent = '';
-            logoutBtn.style.display = 'none';
-        }
-         updateTokenDisplayUI(); // Assicura che il bilancio sia visibile/nascosto correttamente
-    }
+    // ... (openModal, closeModal, switchModalUI come prima) ...
 
 
-    // --- Wallet Functions (Simulated) ---
-    function connectWallet() {
-        console.log("Connecting wallet...");
-        walletConnected = true;
-        const achievementId = 'wallet-connect';
-        const reward = 5;
-        const achievementName = 'Wallet Collegato';
-
-        // Aggiungi achievement solo se non presente
-        if (!userAchievements.some(ach => ach.id === achievementId)) {
-            currentTokens += reward;
-            userAchievements.push({ id: achievementId, name: achievementName, tokens: reward });
-            showNotification(`Wallet collegato! Hai ricevuto ${reward} TRAD.`, 'success');
-        } else {
-            showNotification(`Wallet già collegato.`, 'info');
-        }
-
-        updateWalletModalUI();
-        updateTokenDisplayUI();
-        // closeModal('walletModal'); // Opzionale: chiudere dopo connessione
-    }
-
-    function disconnectWallet() {
-        console.log("Disconnecting wallet...");
-        walletConnected = false;
-        // Decidi se rimuovere l'achievement o resettare i token al disconnect
-        // userAchievements = userAchievements.filter(ach => ach.id !== 'wallet-connect');
-        updateWalletModalUI();
-        updateTokenDisplayUI();
-        showNotification("Wallet disconnesso.", 'info');
-    }
-
-    function updateWalletModalUI() {
-        if (walletConnected) {
-            walletConnectedContent.style.display = 'block';
-            walletConnectContent.style.display = 'none';
-            walletTokenCountEl.textContent = currentTokens;
-            // Genera un indirizzo fittizio statico per la sessione
-            if (!walletAddressEl.textContent || walletAddressEl.textContent.length < 40) {
-                 walletAddressEl.textContent = '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-            }
-
-            achievementsListEl.innerHTML = ''; // Pulisce
-            if (userAchievements.length > 0) {
-                 userAchievements.sort((a,b) => a.name.localeCompare(b.name)); // Ordina achievements
-                 userAchievements.forEach(ach => {
-                    const div = document.createElement('div');
-                    div.classList.add('achievement');
-                    // Potremmo mappare ID a icone specifiche
-                    let iconClass = 'fa-trophy'; // Default
-                    if (ach.id.includes('quiz') || ach.id.includes('assessment')) iconClass = 'fa-question-circle';
-                    if (ach.id.includes('series') || ach.id.includes('exercise')) iconClass = 'fa-dumbbell';
-                    if (ach.id.includes('journal')) iconClass = 'fa-book-open';
-                    if (ach.id.includes('truth')) iconClass = 'fa-check-double';
+    // --- Login/Signup/Logout Functions ---
+    // ... (come prima, assicurati che chiamino saveDataToLocalStorage) ...
 
 
-                    div.innerHTML = `<div class="achievement-name"><i class="fas ${iconClass}" style="color: var(--secondary-color);"></i> ${ach.name}</div> <div class="achievement-tokens"><i class="fas fa-coins"></i> ${ach.tokens} TRAD</div>`;
-                    achievementsListEl.appendChild(div);
-                });
-            } else {
-                 achievementsListEl.innerHTML = '<div class="no-achievements">Nessun achievement sbloccato.</div>';
-            }
-
-        } else {
-            walletConnectedContent.style.display = 'none';
-            walletConnectContent.style.display = 'block';
-        }
-    }
-
-    function updateTokenDisplayUI() {
-        tokenCountEl.textContent = currentTokens;
-        tokenBalanceEl.style.display = (isLoggedIn && walletConnected) ? 'flex' : 'none';
-    }
+    // --- Wallet Functions ---
+    // ... (connectWallet, disconnectWallet, updateWalletModalUI, updateTokenDisplayUI come prima, assicurati che chiamino saveDataToLocalStorage) ...
 
 
-    // --- Challenge Functions (Simulated) ---
+    // --- Challenge Functions ---
     function handleChallengeClick(event) {
-        event.preventDefault(); // Previene il comportamento di default del link
+        event.preventDefault();
         const link = event.currentTarget;
         const challengeId = link.dataset.challengeId;
         const reward = parseInt(link.dataset.reward, 10);
+        const modalTargetId = link.dataset.modalTarget;
 
-        if (!isLoggedIn) {
-            showNotification("Devi accedere o registrarti per le sfide.", 'error');
-            openModal('loginModal');
-            return;
-        }
-        if (!walletConnected) {
-            showNotification("Devi collegare il tuo wallet per guadagnare token.", 'error');
-            openModal('walletModal');
-            return;
-        }
-        if (userAchievements.some(ach => ach.id === challengeId)) {
-            showNotification("Hai già completato questa sfida!", 'info');
-            return;
-        }
+        // Controlli preliminari (login, wallet, già completato)
+        if (!isLoggedIn) { showNotification("Devi accedere.", 'error'); openModal('loginModal'); return; }
+        if (!walletConnected) { showNotification("Devi collegare il wallet.", 'error'); openModal('walletModal'); return; }
+        if (userAchievements.some(ach => ach.id === challengeId)) { showNotification("Sfida già completata!", 'info'); return; }
 
-        console.log(`Starting challenge: ${challengeId}, Reward: ${reward} TRAD`);
-        // Mostra un feedback all'utente che la sfida è iniziata (opzionale)
-        showNotification(`Inizio sfida "${challengeId}"...`, 'info');
+        currentChallengeData = { id: challengeId, reward: reward };
 
-        // Simuliamo il completamento
-        setTimeout(() => {
-            completeChallenge(challengeId, reward);
-        }, 2000); // Simula 2 secondi
+        // Apri il modal corretto e prepara il contenuto
+        if (modalTargetId === 'quizModal') {
+            displayQuiz(challengeId); openModal(modalTargetId);
+        } else if (modalTargetId === 'reflectionModal') {
+            displayReflection(challengeId); openModal(modalTargetId);
+        } else if (modalTargetId === 'tradeSimulatorModal') { // <-- MODIFICA QUI
+            resetSimulation(); // Prepara il simulatore
+            openModal(modalTargetId);
+        } else {
+            // Gestione precedente per simulationModal come conferma semplice (ora obsoleto)
+             // displaySimulationConfirmation(challengeId); openModal(modalTargetId);
+             console.error("Target modal non gestito per la sfida:", challengeId);
+             showNotification("Tipo di sfida non ancora implementato.", 'error');
+        }
     }
 
     function completeChallenge(challengeId, tokenReward) {
-        // Controllo ridondante per sicurezza
+        // ... (Logica come prima per aggiungere token e achievement, salva in localStorage) ...
         if (userAchievements.some(ach => ach.id === challengeId)) return;
-
         console.log(`Challenge completed: ${challengeId}`);
         currentTokens += tokenReward;
-
-        // Mappa ID a nomi più leggibili (come prima)
-         let achievementName = challengeId.replace(/-/g, ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase());
-         const nameMap = { /* ... come prima ... */
-             'self-assessment': 'Auto-Valutazione Completata',
-             'truth-assimilation': 'Assimilazione Verità Fondamentali',
-             '20-trade-series': 'Serie 20 Trade Eseguita',
-             'psych-journal': 'Diario Psicologico Compilato',
-             // Aggiungi altre mappature necessarie
-         };
-         achievementName = nameMap[challengeId] || achievementName;
-
+        let achievementName = getAchievementName(challengeId);
         userAchievements.push({ id: challengeId, name: achievementName, tokens: tokenReward });
-
+        saveDataToLocalStorage();
         updateTokenDisplayUI();
-        showNotification(`Sfida "${achievementName}" completata! Hai guadagnato ${tokenReward} TRAD.`, 'success');
-        if(document.getElementById('walletModal').style.display === 'block') {
-            updateWalletModalUI(); // Aggiorna il modal se è aperto
+        showNotification(`Sfida "${achievementName}" completata! +${tokenReward} TRAD.`, 'success');
+        if(walletModalEl.style.display === 'block') updateWalletModalUI();
+        currentChallengeData = null;
+    }
+
+    function getAchievementName(challengeId) { /* ... come prima ... */ }
+
+    // --- Quiz Logic ---
+    function displayQuiz(challengeId) { /* ... come prima ... */ }
+    function handleSubmitQuiz(event) { /* ... come prima ... */ }
+
+    // --- Reflection Logic ---
+    function displayReflection(challengeId) { /* ... come prima ... */ }
+    function handleSubmitReflection(event) { /* ... come prima ... */ }
+
+    // --- Trade Simulator Logic ---
+
+    function resetSimulation() {
+        console.log("Resetting simulation...");
+        simTradeNumber = 1;
+        simWins = 0;
+        simLosses = 0;
+        simTotalPnl = 0;
+        simCurrentPrice = 0; // Prezzo di partenza fittizio
+        simEntryPrice = 0;
+        isSimulating = false;
+        if (simIntervalId) clearInterval(simIntervalId);
+        simIntervalId = null;
+
+        // Resetta UI
+        updateSimulatorStatusUI();
+        signalAreaEl.style.display = 'block';
+        executionAreaEl.style.display = 'none';
+        finalResultsAreaEl.style.display = 'none';
+        tradeStatusEl.textContent = '';
+        tradeStatusEl.className = ''; // Rimuovi classi win/loss
+        enterTradeBtn.disabled = true; // Disabilitato finché non c'è segnale
+        resetSimulationBtn.style.display = 'block'; // Mostra reset
+        nextTradeBtn.style.display = 'none';
+        currentPriceEl.textContent = '0';
+        priceBarEl.style.left = '50%'; // Resetta barra prezzo
+
+        // Genera il primo segnale
+        generateSignal();
+    }
+
+    function updateSimulatorStatusUI() {
+        currentTradeNumberEl.textContent = `${simTradeNumber} / ${SIM_CONFIG.TOTAL_TRADES}`;
+        totalPnlEl.textContent = simTotalPnl;
+        const totalTradesSoFar = simWins + simLosses;
+        const winRate = totalTradesSoFar > 0 ? ((simWins / totalTradesSoFar) * 100).toFixed(1) + '%' : 'N/A';
+        winRateEl.textContent = winRate;
+    }
+
+    function generateSignal() {
+        if (simTradeNumber > SIM_CONFIG.TOTAL_TRADES) {
+            showFinalResults();
+            return;
+        }
+        console.log(`Generating signal for trade ${simTradeNumber}`);
+        signalTradeNumberEl.textContent = simTradeNumber;
+        simDirection = Math.random() < 0.5 ? 'Long' : 'Short'; // Segnale casuale Long/Short
+        signalDetailsEl.innerHTML = `
+            Segnale: <strong class="signal-${simDirection.toLowerCase()}">${simDirection}</strong><br>
+            SL: ${SIM_CONFIG.STOP_LOSS_POINTS} Punti / TP: ${SIM_CONFIG.TAKE_PROFIT_POINTS} Punti
+        `;
+        enterTradeBtn.disabled = false; // Abilita il bottone per entrare
+        tradeStatusEl.textContent = ''; // Pulisci stato precedente
+        tradeStatusEl.className = '';
+    }
+
+    function enterTrade() {
+        if (isSimulating || !simDirection) return; // Non entrare se sta già simulando o non c'è segnale
+
+        console.log(`Entering Trade ${simTradeNumber}: ${simDirection}`);
+        isSimulating = true;
+        enterTradeBtn.disabled = true; // Disabilita durante il trade
+        signalAreaEl.style.display = 'none'; // Nascondi area segnale
+        executionAreaEl.style.display = 'block'; // Mostra area esecuzione
+        resetSimulationBtn.style.display = 'none'; // Nascondi reset durante il trade
+        nextTradeBtn.style.display = 'none'; // Nascondi bottone next
+
+        executionTradeNumberEl.textContent = simTradeNumber;
+        executionDirectionEl.textContent = simDirection;
+        stopLossPointsEl.textContent = SIM_CONFIG.STOP_LOSS_POINTS;
+        takeProfitPointsEl.textContent = SIM_CONFIG.TAKE_PROFIT_POINTS;
+
+        // Imposta prezzi entrata/SL/TP
+        simEntryPrice = 0; // Partiamo sempre da 0 per semplicità visiva
+        simCurrentPrice = simEntryPrice;
+        currentPriceEl.textContent = simCurrentPrice;
+        priceBarEl.style.left = '50%'; // Posiziona al centro (0)
+
+        if (simDirection === 'Long') {
+            simStopLossPrice = simEntryPrice - SIM_CONFIG.STOP_LOSS_POINTS;
+            simTakeProfitPrice = simEntryPrice + SIM_CONFIG.TAKE_PROFIT_POINTS;
+        } else { // Short
+            simStopLossPrice = simEntryPrice + SIM_CONFIG.STOP_LOSS_POINTS;
+            simTakeProfitPrice = simEntryPrice - SIM_CONFIG.TAKE_PROFIT_POINTS;
+        }
+
+        // Calcola posizioni % barra per SL e TP
+        // Spread totale = TP + SL
+        const totalSpread = SIM_CONFIG.TAKE_PROFIT_POINTS + SIM_CONFIG.STOP_LOSS_POINTS;
+        const slPositionPercent = (SIM_CONFIG.STOP_LOSS_POINTS / totalSpread) * 50; // % rispetto al centro (50%)
+        const tpPositionPercent = (SIM_CONFIG.TAKE_PROFIT_POINTS / totalSpread) * 50; // % rispetto al centro (50%)
+
+        // Aggiorna posizione visiva SL/TP sulla barra
+        const slBarPos = simDirection === 'Long' ? (50 - slPositionPercent) : (50 + slPositionPercent);
+        const tpBarPos = simDirection === 'Long' ? (50 + tpPositionPercent) : (50 - tpPositionPercent);
+        priceBarContainer.style.setProperty('--sl-pos', `${slBarPos}%`);
+        priceBarContainer.style.setProperty('--tp-pos', `${tpBarPos}%`);
+
+
+        // Avvia simulazione movimento prezzo
+        simIntervalId = setInterval(simulatePriceMovement, SIM_CONFIG.TICK_INTERVAL);
+    }
+
+    function simulatePriceMovement() {
+        // Movimento base con probabilità dell'edge
+        let baseMove = 0;
+        if (Math.random() < SIM_CONFIG.EDGE_PROBABILITY) {
+            baseMove = simDirection === 'Long' ? SIM_CONFIG.TICK_SIZE : -SIM_CONFIG.TICK_SIZE;
+        } else {
+            baseMove = simDirection === 'Long' ? -SIM_CONFIG.TICK_SIZE : SIM_CONFIG.TICK_SIZE;
+        }
+
+        // Aggiungi movimento casuale
+        const randomMove = (Math.random() * (SIM_CONFIG.MAX_PRICE_MOVE_PER_TICK * 2)) - SIM_CONFIG.MAX_PRICE_MOVE_PER_TICK;
+        simCurrentPrice += baseMove + randomMove;
+        simCurrentPrice = parseFloat(simCurrentPrice.toFixed(1)); // Arrotonda per evitare numeri troppo lunghi
+
+        currentPriceEl.textContent = simCurrentPrice.toFixed(1);
+
+        // Aggiorna posizione barra prezzo (mappatura prezzo -> %)
+        const totalSpread = SIM_CONFIG.TAKE_PROFIT_POINTS + SIM_CONFIG.STOP_LOSS_POINTS;
+        // Mappa il prezzo attuale (che va da ~ -SL a ~ +TP) a una percentuale 0-100
+        // Il centro (prezzo 0) è 50%
+        let pricePercent = 50;
+         if (simDirection === 'Long') {
+             // Se Long, SL è negativo, TP è positivo
+             pricePercent = 50 + (simCurrentPrice / SIM_CONFIG.TAKE_PROFIT_POINTS) * 50; // Scala su metà barra
+             if(simCurrentPrice < 0) {
+                 pricePercent = 50 - (Math.abs(simCurrentPrice) / SIM_CONFIG.STOP_LOSS_POINTS) * 50;
+             }
+         } else { // Short
+             // Se Short, SL è positivo, TP è negativo
+              pricePercent = 50 - (Math.abs(simCurrentPrice) / SIM_CONFIG.TAKE_PROFIT_POINTS) * 50; // Scala su metà barra
+              if(simCurrentPrice > 0) {
+                 pricePercent = 50 + (simCurrentPrice / SIM_CONFIG.STOP_LOSS_POINTS) * 50;
+             }
+         }
+
+         // Limita tra 0 e 100
+        pricePercent = Math.max(SIM_CONFIG.BAR_MIN_POS, Math.min(SIM_CONFIG.BAR_MAX_POS, pricePercent));
+        priceBarEl.style.left = `${pricePercent}%`;
+
+
+        // Controlla se SL o TP sono stati colpiti
+        let tradeEnded = false;
+        let pnl = 0;
+        if (simDirection === 'Long') {
+            if (simCurrentPrice <= simStopLossPrice) {
+                tradeEnded = true;
+                pnl = -SIM_CONFIG.STOP_LOSS_POINTS;
+                simLosses++;
+                tradeStatusEl.textContent = `Stop Loss Colpito! (${pnl} Punti)`;
+                tradeStatusEl.className = 'loss';
+            } else if (simCurrentPrice >= simTakeProfitPrice) {
+                tradeEnded = true;
+                pnl = SIM_CONFIG.TAKE_PROFIT_POINTS;
+                simWins++;
+                tradeStatusEl.textContent = `Take Profit Raggiunto! (+${pnl} Punti)`;
+                tradeStatusEl.className = 'win';
+            }
+        } else { // Short
+            if (simCurrentPrice >= simStopLossPrice) {
+                tradeEnded = true;
+                pnl = -SIM_CONFIG.STOP_LOSS_POINTS; // Lo stop su short è sempre una perdita
+                simLosses++;
+                tradeStatusEl.textContent = `Stop Loss Colpito! (${pnl} Punti)`;
+                tradeStatusEl.className = 'loss';
+            } else if (simCurrentPrice <= simTakeProfitPrice) {
+                tradeEnded = true;
+                pnl = SIM_CONFIG.TAKE_PROFIT_POINTS; // Il TP su short è un guadagno (differenza positiva)
+                simWins++;
+                tradeStatusEl.textContent = `Take Profit Raggiunto! (+${pnl} Punti)`;
+                tradeStatusEl.className = 'win';
+            }
+        }
+
+        if (tradeEnded) {
+            console.log(`Trade ${simTradeNumber} ended. PNL: ${pnl}`);
+            clearInterval(simIntervalId);
+            simIntervalId = null;
+            simTotalPnl += pnl;
+            simTradeNumber++;
+            isSimulating = false;
+            updateSimulatorStatusUI();
+            nextTradeBtn.style.display = 'inline-block'; // Mostra bottone per prossimo trade
+             resetSimulationBtn.style.display = 'inline-block'; // Mostra reset
         }
     }
+
+     function handleNextTrade() {
+         // Prepara per il prossimo trade
+          executionAreaEl.style.display = 'none'; // Nascondi esecuzione
+          signalAreaEl.style.display = 'block'; // Mostra area segnale
+          generateSignal(); // Genera nuovo segnale
+     }
+
+     function showFinalResults() {
+         console.log("Simulation finished.");
+         signalAreaEl.style.display = 'none';
+         executionAreaEl.style.display = 'none';
+         finalResultsAreaEl.style.display = 'block';
+         resetSimulationBtn.style.display = 'inline-block'; // Mostra reset
+
+         finalTotalPnlEl.textContent = simTotalPnl;
+          const totalTradesCompleted = simWins + simLosses;
+          const finalWinRate = totalTradesCompleted > 0 ? ((simWins / totalTradesCompleted) * 100).toFixed(1) + '%' : 'N/A';
+         finalWinRateEl.textContent = finalWinRate;
+     }
+
+     function handleClaimReward() {
+          if (!currentChallengeData || currentChallengeData.id !== '20-trade-series') {
+               console.error("Dati sfida mancanti o non corretti per riscuotere ricompensa.");
+               return;
+          }
+          completeChallenge(currentChallengeData.id, currentChallengeData.reward);
+          closeModal('tradeSimulatorModal'); // Chiudi il modal dopo aver riscosso
+     }
 
 
     // --- Notification Function ---
-    function showNotification(message, type = 'success') { // Types: success, error, info
-        const notification = document.createElement('div');
-        notification.classList.add('notification');
+    function showNotification(message, type = 'success') { /* ... come prima ... */ }
 
-        let iconClass = 'fa-check-circle'; // Default success
-        if (type === 'error') {
-            notification.classList.add('error');
-            iconClass = 'fa-times-circle';
-        } else if (type === 'info') {
-            notification.classList.add('info');
-            iconClass = 'fa-info-circle';
-        }
+    // --- UI Update Functions ---
+    function updateLoginStateUI() { /* ... come prima ... */ }
+    function updateWalletModalUI() { /* ... come prima ... */ }
+    function updateTokenDisplayUI() { /* ... come prima ... */ }
 
-        notification.innerHTML = `<i class="fas ${iconClass}"></i> ${message}`;
-        notificationArea.appendChild(notification);
+    // --- Navigation Highlight ---
+    function highlightActiveNavLink() { /* ... come prima ... */ }
 
-        // Forza il reflow per applicare la transizione iniziale
-        void notification.offsetWidth;
+    // --- Event Listeners Setup ---
+    function setupEventListeners() {
+        // ... (Listeners per login, signup, wallet, logout, close modal, switch modal come prima) ...
+        loginBtn?.addEventListener('click', () => openModal('loginModal'));
+        signupBtn?.addEventListener('click', () => openModal('signupModal'));
+        walletBtn?.addEventListener('click', () => openModal('walletModal'));
+        logoutBtn?.addEventListener('click', handleLogout);
+        connectWalletBtn?.addEventListener('click', connectWallet);
+        disconnectWalletBtn?.addEventListener('click', disconnectWallet);
+        document.getElementById('login-form')?.addEventListener('submit', handleLogin);
+        document.getElementById('signup-form')?.addEventListener('submit', handleSignup);
+        closeModalsBtns.forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.modalId)));
+        switchModalsLinks.forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); switchModalUI(link.dataset.from, link.dataset.to);}));
+        window.addEventListener('click', (event) => { modals.forEach(modal => { if (event.target == modal) closeModal(modal.id); }); });
 
-        // Mostra notifica
-        notification.classList.add('show');
+        // Listener Sfide Generico
+        challengeLinks.forEach(link => link.addEventListener('click', handleChallengeClick));
 
-        // Nascondi e rimuovi dopo un po'
-        setTimeout(() => {
-            notification.classList.remove('show');
-            // Rimuovi l'elemento dopo che la transizione è finita
-            notification.addEventListener('transitionend', () => {
-                notification.remove();
-            });
-        }, 4000); // Nasconde dopo 4 secondi
+        // Listener Form Sfide Specifici
+        quizForm?.addEventListener('submit', handleSubmitQuiz);
+        reflectionForm?.addEventListener('submit', handleSubmitReflection);
+        // Simulatore
+        enterTradeBtn?.addEventListener('click', enterTrade);
+        nextTradeBtn?.addEventListener('click', handleNextTrade);
+        claimRewardBtn?.addEventListener('click', handleClaimReward);
+         resetSimulationBtn?.addEventListener('click', resetSimulation); // Listener per reset
+
+
+        // Nav Link Highlight on scroll
+        window.addEventListener('scroll', highlightActiveNavLink);
     }
-
-
-    // --- Navigation Highlight (Active Link) ---
-    function highlightActiveNavLink() {
-        let currentSectionId = '';
-        const sections = document.querySelectorAll('main.container section');
-        const offset = document.querySelector('.toolbar').offsetHeight + document.querySelector('nav').offsetHeight + 50; // Offset per attivazione link
-
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - offset;
-            const sectionBottom = sectionTop + section.offsetHeight;
-            if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionBottom) {
-                currentSectionId = section.getAttribute('id');
-            }
-        });
-
-         // Caso speciale per l'inizio pagina o la fine
-         if (window.pageYOffset < sections[0].offsetTop - offset) {
-             currentSectionId = sections[0].getAttribute('id');
-         }
-         if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 50) { // Vicino alla fine
-             currentSectionId = sections[sections.length - 1].getAttribute('id');
-         }
-
-
-        document.querySelectorAll('nav ul li a').forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSectionId}`) {
-                link.classList.add('active');
-            }
-        });
-    }
-
-
-    // --- Event Listeners ---
-    loginBtn?.addEventListener('click', () => openModal('loginModal'));
-    signupBtn?.addEventListener('click', () => openModal('signupModal'));
-    walletBtn?.addEventListener('click', () => openModal('walletModal'));
-    logoutBtn?.addEventListener('click', handleLogout);
-    connectWalletBtn?.addEventListener('click', connectWallet);
-    disconnectWalletBtn?.addEventListener('click', disconnectWallet);
-
-    document.getElementById('login-form')?.addEventListener('submit', handleLogin);
-    document.getElementById('signup-form')?.addEventListener('submit', handleSignup);
-
-    closeModals.forEach(btn => {
-        btn.addEventListener('click', () => closeModal(btn.dataset.modalId));
-    });
-
-    switchModals.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            switchModalUI(link.dataset.from, link.dataset.to);
-        });
-    });
-
-     challengeLinks.forEach(link => {
-        link.addEventListener('click', handleChallengeClick);
-     });
-
-    // Highlight nav link on scroll and load
-    window.addEventListener('scroll', highlightActiveNavLink);
-
 
     // --- Initialization ---
-    updateLoginStateUI(); // Imposta stato iniziale bottoni login/logout
-    updateWalletModalUI(); // Imposta stato iniziale modal wallet
-    updateTokenDisplayUI(); // Imposta stato iniziale token display
-    highlightActiveNavLink(); // Evidenzia link navigazione iniziale
+    function initializeApp() {
+        loadStateFromLocalStorage(); // Carica stato salvato
+        updateLoginStateUI();
+        updateWalletModalUI();
+        updateTokenDisplayUI();
+        highlightActiveNavLink();
+        setupEventListeners(); // Imposta tutti i listener
+        console.log("Trading Mindset App Initialized with Trade Simulator.");
+    }
 
-    console.log("Trading Mindset App Initialized");
+    initializeApp(); // Avvia
 
 }); // End DOMContentLoaded

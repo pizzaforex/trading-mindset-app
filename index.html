@@ -1,198 +1,77 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading in the Zone - Padroneggia la Mentalità del Trader</title>
-    <!-- Collegamento al foglio di stile -->
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Collegamento a Font Awesome (per le icone) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <!-- Sfondo (opzionale, gestito da CSS) -->
-    <div class="parallax-bg" id="parallaxBg"></div>
+<!-- index.html -->
 
-    <!-- Toolbar -->
-    <header class="toolbar">
-        <div class="toolbar-left">
-            <div class="toolbar-logo">Trading Mindset</div>
-            <!-- Potremmo reinserire qui strumenti futuri -->
-        </div>
-        <div class="login-tools">
-            <div class="token-balance" id="token-balance"><i class="fas fa-coins token-icon"></i> <span id="token-count">0</span> TRAD</div>
-            <button class="wallet-button" id="wallet-button"><i class="fas fa-wallet"></i> Wallet</button>
-            <button class="login-button" id="login-btn">Accedi</button>
-            <button class="signup-button" id="signup-btn">Registrati</button>
-            <!-- Aggiungeremo qui il nome utente e il logout dopo il login -->
-            <div id="user-info" style="display: none;">
-                 <span id="username-display" style="margin-right: 15px;"></span>
-                 <button id="logout-btn" class="login-button" style="border-color: var(--danger-color); color: var(--danger-color);">Logout</button>
+<!-- ... (Link della sfida nella sezione #framework) -->
+<div class="challenge" style="margin-top: 2rem;">
+    <div class="token-reward"><i class="fas fa-coins"></i> 50 TRAD</div>
+    <h4><i class="fas fa-play-circle"></i> Sfida Chiave: Serie di 20 Trade</h4>
+    <p>Applica l'esercizio "Operare come un Casinò"...
+        <a href="#" class="resource-link challenge-link"
+           data-challenge-id="20-trade-series"
+           data-reward="50"
+           data-modal-target="tradeSimulatorModal"> <!-- <--- AGGIORNATO QUI -->
+           Inizia la Serie Simulata
+        </a>
+    </p>
+</div>
+
+<!-- ... (Resto dell'HTML) ... -->
+
+<!-- ========== NUOVO MODAL: SIMULATORE DI TRADING ========== -->
+<div id="tradeSimulatorModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;"> <!-- Modal più largo -->
+        <span class="close-modal" data-modal-id="tradeSimulatorModal">&times;</span>
+        <h2 class="modal-title">Simulatore: Serie di 20 Trade Disciplinati</h2>
+        <p class="modal-description" style="text-align: left; margin-bottom: 1.5rem;">
+            Obiettivo: Eseguire 20 trade consecutivi basati su un segnale simulato, rispettando <strong>rigidamente</strong> stop loss e take profit predefiniti, senza intervenire. Osserva la distribuzione casuale dei risultati e pratica la disciplina.
+        </p>
+
+        <div id="simulator-ui">
+            <!-- Area Stato Simulazione -->
+            <div class="simulator-status">
+                <div>Trade Corrente: <strong id="current-trade-number">1 / 20</strong></div>
+                <div>P&L Totale (Simulato): <strong id="total-pnl">0</strong> Punti</div>
+                <div>Win Rate: <strong id="win-rate">N/A</strong></div>
             </div>
-        </div>
-    </header>
 
-    <!-- Barra di Navigazione -->
-    <nav>
-        <ul>
-            <li><a href="#introduzione" class="nav-link">Introduzione</a></li>
-            <li><a href="#principi" class="nav-link">Principi Chiave</a></li>
-            <li><a href="#fasi-sviluppo" class="nav-link">Fasi di Sviluppo</a></li>
-            <li><a href="#framework" class="nav-link">Framework Consistenza</a></li>
-            <li><a href="#risorse" class="nav-link">Risorse</a></li>
-        </ul>
-    </nav>
-
-    <!-- Contenuto Principale -->
-    <main class="container">
-
-        <!-- Sezione 1: Introduzione -->
-        <section id="introduzione">
-            <h2><i class="fas fa-door-open"></i> Introduzione: Il Dilemma del Trader</h2>
-            <p>Benvenuto nel percorso verso la maestria nel trading. Molti aspiranti trader si concentrano quasi esclusivamente sull'analisi di mercato... [Contenuto completo come prima] ... sviluppo di una <span class="concept">mentalità da trader</span>.</p>
-             <!-- ... Sottosezione Perché si Fallisce, Challenge Auto-Valutazione ... -->
-              <h3>Perché la Maggior Parte dei Trader Fallisce?</h3>
-              <p>La risposta risiede nella psicologia... [Contenuto completo come prima]</p>
-              <ul> <li>Reazioni emotive...</li> <li>Difficoltà nell'accettare...</li> <li>Incapacità di eseguire...</li> <li>Errori ripetuti...</li> </ul>
-              <p>La <span class="concept">soluzione</span> non è più analisi, ma lo sviluppo di una <span class="concept">mentalità da trader</span>...</p>
-              <div class="challenge">
-                 <div class="token-reward"><i class="fas fa-coins"></i> 10 TRAD</div>
-                 <h4><i class="fas fa-user-check"></i> Sfida Iniziale: Auto-Valutazione</h4>
-                 <p>Rifletti onestamente... <a href="#" class="resource-link challenge-link" data-challenge-id="self-assessment" data-reward="10">Inizia Valutazione</a></p>
-              </div>
-        </section>
-
-        <!-- Sezione 2: Principi Chiave -->
-        <section id="principi">
-            <h2><i class="fas fa-key"></i> Principi Chiave della Mentalità Vincente</h2>
-            <p>Per operare efficacemente, è necessario ristrutturare il proprio pensiero...</p>
-            <!-- Card 1: Accettare il Rischio -->
-            <div class="card" style="margin-top: 2rem;">
-                <h3><i class="fas fa-shield-alt icon-danger"></i> 1. Accettare Pienamente il Rischio</h3>
-                <p>Il rischio nel trading non è solo la possibilità di perdere denaro... [Contenuto completo come prima] ...esecuzione più fluida e obiettiva.</p>
-                <div class="mental-pitfalls"><h4><i class="fas fa-exclamation-triangle"></i> Trappola: Falsa Accettazione</h4><p>Piazzare uno stop-loss non equivale ad accettare il rischio...</p></div>
+            <!-- Area Segnale/Trade -->
+            <div id="signal-area" class="card" style="background-color: #f8f9fa; margin-top:1rem;">
+                <h4 style="margin-top: 0;">Setup Trade <span id="signal-trade-number">1</span></h4>
+                <div id="signal-details">
+                    <p>In attesa del segnale...</p>
+                    <!-- Qui apparirà il segnale (Long/Short) -->
+                </div>
+                <button id="enter-trade-btn" class="form-button primary-button" style="width: auto; padding: 10px 20px;" disabled>Entra nel Trade</button>
             </div>
-            <!-- Card 2: Pensare in Probabilità -->
-            <div class="card" style="margin-top: 2rem;">
-                <h3><i class="fas fa-dice icon-success"></i> 2. Pensare in Termini di Probabilità</h3>
-                <p>Il mercato si muove in probabilità, non in certezze... [Contenuto completo come prima] ...indipendentemente dal risultato dell'ultimo trade.</p>
-            </div>
-            <!-- Card 3: Le 5 Verità Fondamentali -->
-            <div class="card" style="margin-top: 2rem;">
-                <h3><i class="fas fa-list-check icon-secondary"></i> 3. Le 5 Verità Fondamentali</h3>
-                <p>Queste verità, se integrate come credenze profonde...</p>
-                <ol class="principles-list" style="margin-top: 0;">
-                     <li><strong>Tutto può succedere.</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li>
-                     <li><strong>Non hai bisogno di sapere...</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li>
-                     <li><strong>C'è una distribuzione casuale...</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li>
-                     <li><strong>Un edge è solo una probabilità maggiore...</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li>
-                     <li><strong>Ogni momento nel mercato è unico.</strong><div class="tooltip">?<span class="tooltiptext">...</span></div></li>
-                 </ol>
-                 <p><strong>Beneficio:</strong> Creare un quadro mentale coerente...</p>
-                 <div class="challenge">
-                    <div class="token-reward"><i class="fas fa-coins"></i> 15 TRAD</div>
-                    <h4><i class="fas fa-book"></i> Sfida: Assimilazione Verità</h4>
-                    <p>Scegli una delle 5 Verità e scrivi... <a href="#" class="resource-link challenge-link" data-challenge-id="truth-assimilation" data-reward="15">Invia Riflessione</a></p>
+
+            <!-- Area Esecuzione Trade (visibile durante il trade) -->
+            <div id="execution-area" class="card" style="display: none; margin-top: 1rem; border-left: 5px solid var(--secondary-color);">
+                 <h4 style="margin-top: 0;">Trade <span id="execution-trade-number">1</span> in Corso...</h4>
+                 <p><strong>Direzione:</strong> <span id="execution-direction">N/A</span></p>
+                 <p><strong>Stop Loss:</strong> -<span id="stop-loss-points">5</span> Punti</p>
+                 <p><strong>Take Profit:</strong> +<span id="take-profit-points">10</span> Punti</p>
+                 <div class="market-movement">
+                     Prezzo Corrente (Simulato): <strong id="current-price">0</strong>
+                     <div class="price-bar-container">
+                         <div class="price-bar" id="price-bar"></div>
+                     </div>
                  </div>
+                 <p id="trade-status" style="font-weight: bold; margin-top: 1rem; text-align: center;"></p>
+                 <button id="next-trade-btn" class="form-button success-button" style="display:none; width: auto; padding: 10px 20px; margin-top: 1rem;">Prossimo Trade</button>
             </div>
-        </section>
 
-        <!-- Sezione 3: Fasi di Sviluppo -->
-        <section id="fasi-sviluppo">
-            <h2><i class="fas fa-layer-group"></i> Le Fasi di Sviluppo del Trader</h2>
-            <p>Diventare un trader costantemente profittevole è un processo...</p>
-            <div class="flex-container">
-                <!-- Card Fase Meccanica -->
-                <div class="flex-item card"><h4><i class="fas fa-cogs"></i> 1. Fase Meccanica</h4><p>L'obiettivo è costruire fiducia e disciplina... [Contenuto completo come prima] ...<strong>fondamenta della consistenza.</strong></p></div>
-                <!-- Card Fase Soggettiva -->
-                <div class="flex-item card"><h4><i class="fas fa-lightbulb"></i> 2. Fase Soggettiva</h4><p>Una volta interiorizzati i principi... [Contenuto completo come prima] ...basi della fase meccanica non sono solide.</p></div>
-                <!-- Card Fase Intuitiva -->
-                <div class="flex-item card"><h4><i class="fas fa-brain"></i> 3. Fase Intuitiva</h4><p>Il livello più avanzato... [Contenuto completo come prima] ...padroneggiato le fasi precedenti.</p></div>
-            </div>
-        </section>
+             <!-- Area Risultati Finali (visibile alla fine) -->
+             <div id="final-results-area" style="display: none; text-align: center; margin-top: 2rem;">
+                 <h3>Serie di 20 Trade Completata!</h3>
+                 <p><strong>P&L Totale Finale:</strong> <strong id="final-total-pnl">0</strong> Punti</p>
+                 <p><strong>Win Rate Finale:</strong> <strong id="final-win-rate">N/A</strong></p>
+                 <p>Hai dimostrato disciplina nell'eseguire la serie meccanica.</p>
+                 <button id="claim-reward-btn" class="form-button success-button">Riscuoti Ricompensa</button>
+             </div>
+        </div>
 
-        <!-- Sezione 4: Framework per la Consistenza -->
-        <section id="framework">
-            <h2><i class="fas fa-tools"></i> Il Framework per la Consistenza: Operare come un Casinò</h2>
-            <p>Questa sezione descrive l'esercizio pratico fondamentale...</p>
-            <h3>L'Esercizio Base:</h3>
-            <ol>
-                <li><strong>Scegli un Edge:</strong> ...oggettive e precise...</li>
-                <li><strong>Definisci il Campione:</strong> ...prossimi 20 trade...</li>
-                <li><strong>Predefinisci e Accetta il Rischio:</strong> ...prima di entrare...</li>
-                <li><strong>Esegui Senza Esitazione:</strong> ...agisci immediatamente.</li>
-                <li><strong>Gestisci il Trade:</strong> ...senza intervento soggettivo.</li>
-                <li><strong>Non Giudicare i Risultati Singoli:</strong> ...Concentrati sull'esecuzione...</li>
-            </ol>
-            <!-- Card 7 Principi -->
-            <div class="card consistency-principles">
-                 <h3><i class="fas fa-clipboard-check"></i> I 7 Principi Guida (da Ripetere e Interiorizzare)</h3>
-                 <p>Durante l'esercizio, mantieni questi principi...</p>
-                 <ol class="principles-list" style="font-size: 1.05em;">
-                     <li><strong>Definisco oggettivamente...</strong></li>
-                     <li><strong>Predefinisco il rischio...</strong></li>
-                     <li><strong>Accetto completamente il rischio...</strong></li>
-                     <li><strong>Applico il mio edge...</strong></li>
-                     <li><strong>Prendo profitto...</strong> (Seguendo regole...)</li>
-                     <li><strong>Monitoro continuamente...</strong> (Focalizzato sull'esecuzione...)</li>
-                     <li><strong>Capisco la necessità assoluta...</strong></li>
-                 </ol>
-            </div>
-            <!-- Challenge Serie 20 Trade -->
-            <div class="challenge" style="margin-top: 2rem;">
-                <div class="token-reward"><i class="fas fa-coins"></i> 50 TRAD</div>
-                <h4><i class="fas fa-play-circle"></i> Sfida Chiave: Serie di 20 Trade</h4>
-                <p>Applica l'esercizio "Operare come un Casinò"... <a href="#" class="resource-link challenge-link" data-challenge-id="20-trade-series" data-reward="50">Inizia la Serie Simulata</a></p>
-            </div>
-        </section>
+         <!-- Bottone Reset (per ricominciare la simulazione) -->
+          <button id="reset-simulation-btn" class="form-button danger-button" style="width: auto; padding: 8px 15px; font-size: 0.9rem; margin-top: 1.5rem; display: none;">Reset Simulazione</button>
 
-        <!-- Sezione 5: Risorse -->
-        <section id="risorse">
-            <h2><i class="fas fa-graduation-cap"></i> Risorse e Prossimi Passi</h2>
-            <p>Padroneggiare la mentalità del trading è un viaggio continuo...</p>
-            <div class="resources">
-                <h4><i class="fas fa-book"></i> Letture Consigliate</h4>
-                <ul><li>"Trading in the Zone"...</li><li>"The Disciplined Trader"...</li><li>Altri libri...</li></ul>
-                <h4><i class="fas fa-link"></i> Strumenti Utili</h4>
-                <ul><li>Diario di Trading...</li><li>Software di Backtesting...</li><li>Comunità di Trader...</li></ul>
-                <h4><i class="fas fa-chalkboard-teacher"></i> Coaching e Supporto</h4>
-                <ul><li>Considera un coaching...</li></ul>
-            </div>
-            <!-- Challenge Diario Psicologico -->
-            <div class="challenge" style="margin-top: 2rem;">
-                <div class="token-reward"><i class="fas fa-coins"></i> 30 TRAD</div>
-                <h4><i class="fas fa-journal-whills"></i> Sfida: Diario Psicologico</h4>
-                <p>Tieni un diario per una settimana... <a href="#" class="resource-link challenge-link" data-challenge-id="psych-journal" data-reward="30">Scarica Template Diario</a></p>
-            </div>
-            <p style="margin-top: 2rem; text-align: center;">Ricorda: la consistenza non si trova nel mercato, ma dentro di te.</p>
-            <div style="text-align: center; margin-top: 2rem;">
-                <a href="#top" class="cta-button">Torna su</a> <!-- Usa #top o l'ID dell'header -->
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 Trading Mindset Academy. Ispirato da "Trading in the Zone" di Mark Douglas.</p>
-        <p>Disclaimer: Il trading comporta rischi significativi. Questo sito è solo a scopo didattico.</p>
-    </footer>
-
-    <!-- Modals HTML (Login, Signup, Wallet) -->
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal"> <div class="modal-content"> <span class="close-modal" data-modal-id="loginModal">&times;</span> <h2 class="modal-title">Accedi</h2> <form id="login-form"> <div class="form-group"> <label for="login-email">Email</label> <input type="email" id="login-email" required> </div> <div class="form-group"> <label for="login-password">Password</label> <input type="password" id="login-password" required> </div> <button type="submit" class="form-button">Accedi</button> <div class="form-footer"> Non hai un account? <a href="#" class="switch-modal" data-from="loginModal" data-to="signupModal">Registrati</a> </div> </form> </div> </div>
-    <!-- Signup Modal -->
-    <div id="signupModal" class="modal"> <div class="modal-content"> <span class="close-modal" data-modal-id="signupModal">&times;</span> <h2 class="modal-title">Registrati</h2> <form id="signup-form"> <div class="form-group"> <label for="signup-name">Nome</label> <input type="text" id="signup-name" required> </div> <div class="form-group"> <label for="signup-email">Email</label> <input type="email" id="signup-email" required> </div> <div class="form-group"> <label for="signup-password">Password</label> <input type="password" id="signup-password" required> </div> <div class="form-group"> <label for="signup-confirm">Conferma Password</label> <input type="password" id="signup-confirm" required> </div> <button type="submit" class="form-button">Crea Account</button> <div class="form-footer"> Hai già un account? <a href="#" class="switch-modal" data-from="signupModal" data-to="loginModal">Accedi</a> </div> </form> </div> </div>
-    <!-- Wallet Modal -->
-    <div id="walletModal" class="modal"> <div class="modal-content"> <span class="close-modal" data-modal-id="walletModal">&times;</span> <h2 class="modal-title">Il Tuo Wallet TRAD</h2> <div id="wallet-connected-content" style="display: none;"> <div class="token-amount"> <i class="fas fa-coins"></i> <span id="wallet-token-count">0</span> </div> <div class="token-name">TRAD Token</div> <div class="wallet-info"> <p><strong>Indirizzo Wallet Collegato:</strong></p> <div class="wallet-address" id="wallet-address"></div> </div> <div class="wallet-achievements"> <h3><i class="fas fa-trophy"></i> Achievements</h3> <div id="achievements-list"> <div class="no-achievements">Nessun achievement sbloccato.</div> </div> </div> <button id="disconnect-wallet-btn" class="form-button danger-button" style="margin-top: 20px;">Disconnetti Wallet</button> </div> <div id="wallet-connect-content"> <p class="modal-description">Collega il tuo wallet per guadagnare e conservare i token TRAD.</p> <i class="fas fa-wallet modal-icon icon-success"></i> <button id="connect-wallet-btn" class="form-button success-button">Collega Wallet</button> <p class="modal-info-text">I token TRAD sbloccano contenuti e strumenti avanzati.</p> </div> </div> </div>
-
-    <!-- Notification Area -->
-    <div id="notification-area">
-        <!-- Le notifiche verranno aggiunte qui dinamicamente -->
     </div>
-
-
-    <!-- Collegamento al file JavaScript PRINCIPALE (alla fine del body) -->
-    <script src="js/main.js"></script>
-</body>
-</html>
+</div>
+<!-- ========== FINE MODAL SIMULATORE ========== -->
