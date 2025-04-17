@@ -24,7 +24,8 @@
 
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: calc(var(--header-height) + var(--nav-height) + 20px); /* Offset per link interni */
+    /* Keep scroll-padding in case internal links within loaded content are ever used */
+    scroll-padding-top: calc(var(--header-height) + var(--nav-height) + 20px);
 }
 
 body {
@@ -63,7 +64,8 @@ h1, h2, h3 {
     line-height: 1.3;
 }
 h1 { margin-bottom: 0.5rem; font-size: 2.8rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-h2 { color: var(--primary-color); border-bottom: 3px solid var(--secondary-color); padding-bottom: 0.6rem; margin-bottom: 1.8rem; font-size: 2rem; display: flex; align-items: center; }
+h2 { color: var(--primary-color); border-bottom: 3px solid var(--secondary-color); padding-bottom: 0.6rem; margin-top: 3rem; /* Added margin-top for spacing between dynamic sections */ margin-bottom: 1.8rem; font-size: 2rem; display: flex; align-items: center; }
+h2:first-of-type { margin-top: 0; } /* Remove top margin for the very first h2 in the container */
 h2 i { margin-right: 12px; color: var(--secondary-color); font-size: 1.8rem; }
 h3 { color: var(--secondary-color); font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1rem; }
 h4 { font-size: 1.15rem; margin-bottom: 0.8rem; color: var(--primary-color); }
@@ -74,15 +76,29 @@ a { color: var(--secondary-color); text-decoration: none; transition: color 0.2s
 a:hover { color: var(--primary-color); text-decoration: underline; }
 code, .concept { background-color: #e9ecef; padding: 3px 7px; border-radius: 4px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; color: var(--secondary-color); font-size: 0.95em; }
 
+/* --- Loading Placeholder --- */
+.loading-placeholder {
+    text-align: center;
+    padding: 5rem 0;
+    color: var(--grey-text);
+}
+.loading-placeholder i {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
 /* --- Header (Banner) --- */
-header.banner { /* Rinominato per chiarezza rispetto a <header> toolbar */
+/* This style might be reused if you add banners to dynamic content */
+header.banner {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: var(--light-text);
     text-align: center;
     padding: 4rem 1rem;
+    margin-bottom: 2rem; /* Add space below banner */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: relative;
     overflow: hidden;
+    border-radius: 8px; /* Optional: match card radius */
 }
 header.banner::before { /* Sfondo SVG pattern */
     content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -141,9 +157,15 @@ nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: ce
 nav ul li a { text-decoration: none; color: var(--secondary-color); font-weight: 600; padding: 10px 15px; /* Adattato a height */ border-radius: 4px; transition: background-color 0.2s, color 0.2s; font-size: 0.95rem; display: block; line-height: calc(var(--nav-height) - 20px); /* Centra verticalmente */}
 nav ul li a:hover, nav ul li a.active { background-color: var(--secondary-color); color: var(--light-text); }
 
-/* --- Sezioni Principali (<section> tag) --- */
-main.container section { padding: 3rem 0; border-bottom: 1px solid var(--border-color); }
-main.container section:last-of-type { border-bottom: none; padding-bottom: 1rem; } /* Meno padding all'ultima */
+/* --- Sezioni Principali (generati dinamicamente <section> tag) --- */
+main.container section {
+    padding: 0rem 0 2rem 0; /* Reduced top padding, rely on h2 margin; Added bottom padding */
+    border-bottom: 1px solid var(--border-color);
+}
+main.container section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 1rem; /* Meno padding all'ultima */
+}
 
 /* --- Cards --- */
 .card { background: var(--card-bg); border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--border-color); }
@@ -167,14 +189,75 @@ main.container section:last-of-type { border-bottom: none; padding-bottom: 1rem;
 .mental-pitfalls { background-color: #fff8e1; border-left: 4px solid var(--accent-color); padding: 1.2rem; margin: 1.5rem 0; border-radius: 4px; }
 .mental-pitfalls h4 { color: #e65100; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; }
 .mental-pitfalls h4 i { margin-right: 8px; }
-.tooltip { /* ... invariato ... */ }
-.token-reward { /* ... invariato ... */ }
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    margin-left: 5px;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+    font-weight: bold;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 220px;
+    background-color: #555;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 1;
+    bottom: 135%; /* Position above the tooltip */
+    left: 50%;
+    margin-left: -110px; /* Use half of the width to center */
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.9rem;
+    font-weight: normal;
+    line-height: 1.4;
+}
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+.token-reward {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 3px 8px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+.token-reward i { margin-right: 4px; }
+
 
 /* --- Pulsanti --- */
 .cta-button { display: inline-block; background-color: var(--secondary-color); color: var(--light-text); padding: 0.8rem 1.8rem; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 1rem; transition: background-color 0.3s, transform 0.2s; border: none; }
 .cta-button:hover { background-color: var(--primary-color); transform: translateY(-2px); }
 .form-button { width: 100%; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; margin-top: 10px; font-size: 1rem; transition: background-color 0.3s; }
-.form-button.primary-button { background-color: var(--secondary-color); color: var(--light-text); }
+.form-button.primary-button { background-color: var(--secondary-color); color: var(--light-text); } /* Use specific class if needed */
 .form-button.primary-button:hover { background-color: var(--primary-color); }
 .form-button.success-button { background-color: var(--success-color); color: var(--light-text); }
 .form-button.success-button:hover { background-color: #3e8e41; }
@@ -187,11 +270,26 @@ main.container section:last-of-type { border-bottom: none; padding-bottom: 1rem;
     padding: 5px 10px;
     border: 1px solid var(--secondary-color);
     border-radius: 4px;
+    background-color: #fff; /* White background */
+    color: var(--secondary-color); /* Blue text */
 }
 .resource-link.challenge-link:hover {
     background-color: var(--secondary-color);
     color: var(--light-text);
     text-decoration: none;
+}
+/* Style for completed challenges */
+.resource-link.challenge-link.completed {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+    opacity: 0.7; /* Make it slightly faded */
+    cursor: default;
+    pointer-events: none; /* Disable clicks */
+}
+.resource-link.challenge-link.completed:hover {
+     background-color: var(--success-color); /* Keep same color on hover */
+     color: white;
 }
 
 
@@ -222,7 +320,7 @@ main.container section:last-of-type { border-bottom: none; padding-bottom: 1rem;
 .achievement { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px dashed #eee; font-size: 0.95rem;}
 .achievement:last-child { border-bottom: none; }
 .achievement-name { font-weight: 600; color: var(--dark-text); display: flex; align-items: center;}
-.achievement-name i { margin-right: 8px; color: var(--success-color); }
+.achievement-name i { margin-right: 8px; /* color: var(--success-color); */ /* Color now set via JS based on type */ }
 .achievement-tokens { color: var(--success-color); font-weight: bold; display: flex; align-items: center; }
 .achievement-tokens i { color: #FFD700; margin-right: 4px; }
 .no-achievements { color: var(--grey-text); font-style: italic; text-align: center; padding: 15px 0; }
@@ -244,7 +342,7 @@ main.container section:last-of-type { border-bottom: none; padding-bottom: 1rem;
     padding: 12px 20px;
     border-radius: 5px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    display: flex; /* Cambiato da none */
+    display: flex;
     align-items: center;
     opacity: 0; /* Inizia invisibile */
     transform: translateX(100%); /* Inizia fuori schermo */
@@ -273,15 +371,26 @@ footer p { margin-bottom: 0.5rem; }
 
 /* --- Responsive (Esempio base) --- */
 @media (max-width: 768px) {
-    nav ul { justify-content: flex-start; /* Allinea a sinistra su mobile */ gap: 5px; }
-    nav ul li a { padding: 6px 8px; font-size: 0.9rem; }
+    nav ul { justify-content: center; /* Center items on mobile */ overflow-x: auto; /* Allow scrolling if too many items */ gap: 5px; }
+    nav ul li a { padding: 6px 10px; font-size: 0.9rem; }
     h1 { font-size: 2.2rem; }
-    h2 { font-size: 1.7rem; }
+    h2 { font-size: 1.7rem; margin-top: 2.5rem;}
     h2 i { font-size: 1.5rem; }
     .container { padding: 1rem; }
     .card { padding: 1.5rem; }
     .modal-content { width: 95%; margin: 5% auto;}
     .toolbar-logo { font-size: 1.1rem;}
+    .login-tools { gap: 5px; } /* Reduce gap */
     .login-tools button { padding: 6px 10px; font-size: 0.85rem; }
     .token-balance { padding: 4px 8px; font-size: 0.85rem;}
+    #username-display { margin-right: 8px;} /* Reduce margin */
+}
+
+@media (max-width: 480px) {
+    nav ul li a { padding: 5px 8px; font-size: 0.85rem; }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.3rem; }
+    .token-balance { display: none !important; } /* Hide token balance on very small screens if needed */
+    .login-tools { flex-wrap: wrap; justify-content: flex-end; } /* Allow wrapping */
 }
